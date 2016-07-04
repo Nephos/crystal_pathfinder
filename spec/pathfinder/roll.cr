@@ -8,5 +8,8 @@ describe Pathfinder::Roll do
     r.min.should eq 5
     r.max.should eq 24
     r.average.should eq 14.5
+    10.times do
+      (5..24).includes?(r.test).should eq true
+    end
   end
 end

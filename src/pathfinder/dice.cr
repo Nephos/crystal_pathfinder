@@ -48,7 +48,7 @@ module Pathfinder
     end
 
     def test : Int32
-      @count.times.reduce(0) { |l, r| l + r.test }
+      @count.times.reduce(0) { |r, l| r + @die.test }
     end
   end
 end

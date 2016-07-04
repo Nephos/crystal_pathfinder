@@ -16,12 +16,12 @@ module Pathfinder
 
     {% for ft in ["min", "max", "test"] %}
     def {{ ft.id }} : Int32
-      @dice.map { |d| d.{{ ft.id }} }.sum
+      @dice.reduce(0) { |r, l| r + l.{{ ft.id }} }
     end
     {% end %}
 
     def average : Float64
-      @dice.map { |d| d.average }.sum
+      @dice.reduce(0.0) { |r, l| r + l.average }
     end
   end
 end
