@@ -1,10 +1,10 @@
 require "./die"
 
 module Pathfinder
-  class FixedValue < Die
+  module FixedValue
 
-    def initialize(value : Int32)
-      super(value..value)
+    def self.new(value : Int32)
+      Pathfinder::Die.new(value..value)
     end
 
   end

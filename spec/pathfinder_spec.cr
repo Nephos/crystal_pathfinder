@@ -1,7 +1,5 @@
 require "./spec_helper"
-require "./die"
-require "./fixed_value"
-require "./roll"
+require "./pathfinder/*"
 
 describe Pathfinder do
   it "works" do
