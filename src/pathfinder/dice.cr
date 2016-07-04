@@ -16,38 +16,46 @@ module Pathfinder
       @die = Pathfinder::Die.new(1..die_type)
     end
 
-    # Returns a `Dice` parsed from `str`.
-    # Yield the string parsed
-    def self.parse(str : String, strict = true)  : Pathfinder::Dice
-      match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\Z" : ""}/i)
-      raise ParseError.new("#{str}") if match.nil?
+    # Returns the `Dice` parsed from `str`.
+    private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Pathfinder::Dice)
+      match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
+      raise ParseError.new("near to '#{str}'") if match.nil?
       count = match[1]
       die = match[2]?
-      yield match[0]
-      return Pathfinder::Dice.new(1, Pathfinder::FixedValue.new(count.to_i)) if die.nil?
-      return Pathfinder::Dice.new(count.to_i, die.to_i)
-    end
-
-    # Parse the dice and return it but does not yield
-    def self.parse(str : String, struct = true) : Pathfinder::Dice
-      return parse(str, strict) {}
-    end
-
-    # Returns a `Dice` parsed
-    #
-    # Parse `str`, and yield the unconsumed string
-    # ```
-    # dice = Dice.consume("1d6+2") do |rest|
-    #   # rest = "+2"
-    # end
-    # # dice = Dice.new(1, Die.new(1..6))
-    # ```
-    def self.consume(str : String)
-      str = str.strip
-      dice = parse(str, false) do |consumed|
-        yield consumed.size >= str.size ? nil : str[consumed.size..-1]
+      if die.nil?
+        return {str: match[0], dice: Pathfinder::Dice.new(1, Pathfinder::FixedValue.new(count.to_i))}
+      else
+        return {str: match[0], dice: Pathfinder::Dice.new(count.to_i, die.to_i)}
       end
-      return dice
+    end
+
+    # Yield the `Dice` parsed from `str`.
+    def self.parse(str : String, strict = true) : String
+      data = parse_string(str, strict)
+      yield data[:dice]
+      return data[:str]
+    end
+
+    def self.parse(str : String, strict = true) : Pathfinder::Dice
+      data = parse_string(str, strict)
+      return data[:dice]
+    end
+
+    # Returns the unconsumed string
+    #
+    # Parse `str`, and yield a `Dice` parsed
+    # ```
+    # rest = Dice.consume("1d6+2") do |dice|
+    #   # dice = Dice.new(1, Die.new(1..6))
+    # end
+    #   # rest = "+2"
+    # ```
+    def self.consume(str : String) : String?
+      str = str.strip
+      consumed = parse(str, false) do |dice|
+        yield dice
+      end
+      return consumed.size >= str.size ? nil : str[consumed.size..-1]
     end
 
     {% for ft in ["min", "max"] %}
