@@ -32,4 +32,11 @@ describe Pathfinder::Roll do
   it "parse (error)" do
     expect_raises { Pathfinder::Roll.parse("yolo") }
   end
+
+  it "parse (more)" do
+    (r = Pathfinder::Roll.parse(" 1d6 - 1 + 2 - 1d6 ")).should be_a(Pathfinder::Roll)
+    r.min.should eq -4
+    r.max.should eq 6
+    r.average.should eq 1
+  end
 end

@@ -23,6 +23,7 @@ module Pathfinder
 
     private def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
       return list if str.nil?
+      str = str.strip
       sign = str[0]
       if sign != '+' && sign != '-' && !list.empty?
         raise ParsingError.new("Parsing Error: roll, near to '#{str}'")
