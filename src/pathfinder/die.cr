@@ -11,6 +11,10 @@ module Pathfinder
       @faces = 1..nb_faces
     end
 
+    def reverse : Die
+      Die.new -max..-min
+    end
+
     def max : Int32
       @faces.end
     end

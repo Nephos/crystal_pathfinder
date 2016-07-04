@@ -4,7 +4,7 @@ require "./dice"
 
 module Pathfinder
   class Roll
-    class ParseError < Exception
+    class ParsingError < Exception
     end
 
     @dice : Array(Dice)
@@ -12,17 +12,31 @@ module Pathfinder
     def initialize(@dice)
     end
 
-    def self.parse(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
-      return list if !str.nil?
-      sign = true
-      if str[0] != "+" &  str[0] != "-" && !list.empty?
-        raise ParseError.new("at '#{str}'")
+    def reverse! : Roll
+      @dice.each{|die| die.reverse! }
+      self
+    end
+
+    def reverse : Roll
+      Roll.new @dice.map{|die| die.reverse }
+    end
+
+    private def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
+      return list if str.nil?
+      sign = str[0]
+      if sign != '+' && sign != '-' && !list.empty?
+        raise ParsingError.new("Parsing Error: roll, near to '#{str}'")
       end
-      sign = str[0] == "-"
-      list << Pathfinder::Dice.consume(str) do |rest|
-        parse(rest, list)
+      str = str[1..-1] if sign == '-' || sign == '+'
+      rest = Dice.consume(str) do |dice|
+        list << (sign == '-' ? dice.reverse : dice)
       end
+      parse_str(rest, list)
       return list
+    end
+
+    def self.parse(str : String) : Roll
+      return Roll.new(parse_str(str))
     end
 
     {% for ft in ["min", "max", "test"] %}

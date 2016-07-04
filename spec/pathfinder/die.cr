@@ -21,4 +21,11 @@ describe Pathfinder::Die do
       ((min..max).includes? Pathfinder::Die.new(min..max).test).should eq(true)
     end
   end
+
+  it "reverse" do
+    Pathfinder::Die.new(1..20).reverse.min.should eq -20
+    Pathfinder::Die.new(1..20).reverse.max.should eq -1
+    Pathfinder::Die.new(1..1).reverse.min.should eq -1
+    Pathfinder::Die.new(1..1).reverse.max.should eq -1
+  end
 end

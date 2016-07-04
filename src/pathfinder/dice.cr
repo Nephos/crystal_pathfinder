@@ -3,7 +3,7 @@ require "./fixed_value"
 
 module Pathfinder
   class Dice
-    class ParseError < Exception
+    class ParsingError < Exception
     end
 
     @count : Int32
@@ -16,10 +16,14 @@ module Pathfinder
       @die = Pathfinder::Die.new(1..die_type)
     end
 
+    def reverse : Dice
+      Dice.new @count, @die.reverse
+    end
+
     # Returns the `Dice` parsed from `str`.
     private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Pathfinder::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
-      raise ParseError.new("near to '#{str}'") if match.nil?
+      raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
       count = match[1]
       die = match[2]?
       if die.nil?
