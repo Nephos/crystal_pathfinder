@@ -3,7 +3,6 @@ require "./fixed_value"
 
 module Pathfinder
   class Dice
-
     @count : Int32
     @die : Pathfinder::Die
 
@@ -14,7 +13,7 @@ module Pathfinder
       @die = Pathfinder::Die.new(1..die_type)
     end
 
-    # Returns a Dice parsed from str.
+    #  Returns a Dice parsed from str.
     def self.parse(str : String, strict = true)
       match = str.match(/\A(\d+)(:?(:?d)(\d+))?#{strict ? "\Z" : ""}/i)
       count = match[1]
@@ -38,15 +37,18 @@ module Pathfinder
       return str[consumed..-1].strip
     end
 
-    {% for ft in ["min", "max", "test"] %}
+    {% for ft in ["min", "max"] %}
     def {{ ft.id }} : Int32
       @die.{{ ft.id }} * @count
     end
     {% end %}
 
-    def average : Int32
-      @count.times.reduce(0){|l, r| l + r.test }
+    def average : Float64
+      @die.average * @count
     end
 
+    def test : Int32
+      @count.times.reduce(0) { |l, r| l + r.test }
+    end
   end
 end

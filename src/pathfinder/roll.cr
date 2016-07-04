@@ -4,32 +4,24 @@ require "./dice"
 
 module Pathfinder
   class Roll
-
-    @dice : Array(Die)
+    @dice : Array(Dice)
 
     def initialize(@dice)
     end
 
-    def self.parse(str : String, list : Array(Die) = Array(Die).new) : Array(Die)
-      rest = Pathfinder::Dice.consume(str) { |dice| list << dice }
-      return list
+    def self.parse(str : String, list : Array(Dice) = Array(Dice).new) : Array(Dice)
+      # rest = Pathfinder::Dice.consume(str) { |dice| list << dice }
+      # return list
     end
 
-    def min : Int32
-      @dice.map{|d| d.min }.sum
+    {% for ft in ["min", "max", "test"] %}
+    def {{ ft.id }} : Int32
+      @dice.map { |d| d.{{ ft.id }} }.sum
     end
+    {% end %}
 
-    def max : Int32
-      @dice.map{|d| d.max }.sum
+    def average : Float64
+      @dice.map { |d| d.average }.sum
     end
-
-    def average : Int32
-      @dice.map{|d| d.average }.sum
-    end
-
-    def test : Int32
-      @dice.map{|d| d.test }.sum
-    end
-
   end
 end
