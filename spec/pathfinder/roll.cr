@@ -13,6 +13,11 @@ describe Pathfinder::Roll do
     end
   end
 
+  it "test (details)" do
+    r = Pathfinder::Roll.new [Pathfinder::Dice.new(2, 6), Pathfinder::Dice.new(1, 4)]
+    # TODO
+  end
+
   it "parse (simple)" do
     (r1 = Pathfinder::Roll.parse("2d6+4")).should be_a(Pathfinder::Roll)
     r1.average.should eq 11

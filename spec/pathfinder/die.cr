@@ -5,7 +5,7 @@ describe Pathfinder::Die do
     Pathfinder::Die.new(20).should be_a(Pathfinder::Die)
   end
 
-  it "min max" do
+  it "min, max, average" do
     Pathfinder::Die.new(1..1).min.should eq 1
     Pathfinder::Die.new(1..1).max.should eq 1
     Pathfinder::Die.new(1..1).average.should eq 1

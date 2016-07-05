@@ -4,6 +4,14 @@ describe Pathfinder::Dice do
     d.should be_a Pathfinder::Dice
     d.min.should eq 2
     d.max.should eq 40
+    d.average.should eq 21
+  end
+
+  it "details" do
+    d = Pathfinder::Dice.new 2, 6
+    d.min_details.should eq [1, 1]
+    d.max_details.should eq [6, 6]
+    d.average_details.should eq [3.5, 3.5]
   end
 
   it "reverse" do

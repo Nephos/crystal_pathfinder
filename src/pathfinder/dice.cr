@@ -66,10 +66,18 @@ module Pathfinder
     def {{ ft.id }} : Int32
       @die.{{ ft.id }} * @count
     end
+
+    def {{ (ft + "_details").id }} : Array(Int32)
+      @count.times.to_a.map{ @die.{{ ft.id }} }
+    end
     {% end %}
 
     def average : Float64
       @die.average * @count
+    end
+
+    def average_details : Array(Float64)
+      @count.times.to_a.map{ @die.average }
     end
 
     def test : Int32
