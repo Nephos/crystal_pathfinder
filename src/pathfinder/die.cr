@@ -22,6 +22,12 @@ module Pathfinder
       @faces = 1..nb_faces
     end
 
+    # Reverse the values
+    #
+    # Example:
+    # ```
+    # Die.new(1..6).reverse # => Die.new -6..-1
+    # ```
     def reverse : Die
       Die.new -max..-min
     end
@@ -34,6 +40,7 @@ module Pathfinder
       @faces.begin
     end
 
+    # Returns a random value in the range of the dice
     def test : Int32
       @faces.to_a.sample
     end

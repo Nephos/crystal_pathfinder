@@ -5,6 +5,7 @@ require "./fixed_value"
 module Pathfinder
   # A `Dice` is a amount of `Die`.
   # It is rollable exactly like a classic `Die`
+  #
   # It is also possible to get the details of a roll, using the methods
   # `min_details`, `max_details`, `average_details`, `test_details`
   #
@@ -26,11 +27,12 @@ module Pathfinder
     def initialize(@count, @die)
     end
 
+    # Create a `Dice` with "die_type" faces.
     def initialize(@count, die_type : Int32)
       @die = Pathfinder::Die.new(1..die_type)
     end
 
-    # Reverse the values of the `Dice`.
+    # Reverse the `Die` of the `Dice`.
     #
     # Example:
     # ```
@@ -40,10 +42,14 @@ module Pathfinder
       Dice.new @count, @die.reverse
     end
 
-    # Returns the `Dice` and the string parsed from `str`.
+    # Returns the `Dice` and the string parsed from `str`, in a `NamedTuple`
+    # with "str" and "dice" keys.
     #
-    # If `strict` is true, then the string must end following the regex `\A\d+(d\d+)?\Z/i`
-    # If `strict` is false, then the string doesn't have to finish following the regexp.
+    # - If `strict` is true, then the string must end following the regex
+    #   `\A\d+(d\d+)?\Z/i`
+    #
+    # - If `strict` is false, then the string doesn't have to finish following
+    # the regexp.
     private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Pathfinder::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
       raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
@@ -56,7 +62,10 @@ module Pathfinder
       end
     end
 
+    # Return a valid string parsed from `str`. (see #parse_string)
+    #
     # Yields the `Dice` parsed from `str`.
+    #
     # Then, it returns the string read.
     # If strict is false, only the valid string is returned.
     def self.parse(str : String, strict = true) : String
@@ -65,15 +74,17 @@ module Pathfinder
       return data[:str]
     end
 
-    # Returns the `Dice` parsed
+    # Returns the `Dice` parsed. (see #parse_string)
     def self.parse(str : String, strict = true) : Pathfinder::Dice
       data = parse_string(str, strict)
       return data[:dice]
     end
 
-    # Returns the unconsumed string
+    # Returns the unconsumed string.
     #
-    # Parse `str`, and yield a `Dice` parsed
+    # Parse `str`, and yield a `Dice` parsed.
+    # It does not requires to be a full valid string
+    # (see #parse when strict is false).
     # ```
     # rest = Dice.consume("1d6+2") do |dice|
     #   # dice = Dice.new(1, Die.new(1..6))
@@ -98,20 +109,22 @@ module Pathfinder
     end
     {% end %}
 
+    # Roll a amount of dice as specified, and returns the sum
+    def test : Int32
+      @count.times.reduce(0) { |r, l| r + @die.test }
+    end
+
+    # Roll a amount of dice as specified, and returns the values
+    def test_details : Array(Int32)
+      @count.times.to_a.map { @die.test }
+    end
+
     def average : Float64
       @die.average * @count
     end
 
     def average_details : Array(Float64)
       @count.times.to_a.map { @die.average }
-    end
-
-    def test : Int32
-      @count.times.reduce(0) { |r, l| r + @die.test }
-    end
-
-    def test_details : Array(Int32)
-      @count.times.to_a.map { @die.test }
     end
   end
 end
