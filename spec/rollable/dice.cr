@@ -48,4 +48,9 @@ describe Rollable::Dice do
     end
     rest.should eq("+2")
   end
+
+  it "to_s" do
+    Rollable::Dice.parse("2d6").to_s.should eq("2D6")
+    Rollable::Dice.parse("2").to_s.should eq("2")
+  end
 end

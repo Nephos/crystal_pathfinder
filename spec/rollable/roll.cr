@@ -52,4 +52,8 @@ describe Rollable::Roll do
     r.max.should eq 6
     r.average.should eq 1
   end
+
+  it "to_s" do
+    Rollable::Roll.parse(" 1d6 - 1 + 2 - 1d6 ").to_s.should eq("1D6 - 1 + 2 - 1D6")
+  end
 end

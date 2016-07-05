@@ -28,4 +28,10 @@ describe Rollable::Die do
     Rollable::Die.new(1..1).reverse.min.should eq -1
     Rollable::Die.new(1..1).reverse.max.should eq -1
   end
+
+  it "to_s" do
+    Rollable::Die.new(1..20).to_s.should eq "D20"
+    Rollable::Die.new(2..2).to_s.should eq "2"
+    Rollable::Die.new(2..4).to_s.should eq "D(2,4)"
+  end
 end

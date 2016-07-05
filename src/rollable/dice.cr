@@ -127,5 +127,13 @@ module Rollable
     def average_details : Array(Float64)
       @count.times.to_a.map { @die.average }
     end
+
+    def to_s : String
+      if @die.size == 1
+        (@count * @die.min).to_s
+      else
+        "#{@count}#{@die.to_s}"
+      end
+    end
   end
 end

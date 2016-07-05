@@ -48,5 +48,19 @@ module Rollable
     def average : Float64
       @faces.reduce { |r, l| r + l }.to_f64 / @faces.size
     end
+
+    def size
+      @faces.size
+    end
+
+    def to_s : String
+      if self.size == 1
+        min.to_s
+      elsif self.min == 1
+        "D#{self.max}"
+      else
+        "D(#{self.min},#{self.max})"
+      end
+    end
   end
 end

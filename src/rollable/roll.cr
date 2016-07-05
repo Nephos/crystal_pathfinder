@@ -80,5 +80,19 @@ module Rollable
     def average_details : Array(Float64)
       @dice.map { |dice| dice.average_details }.flatten
     end
+
+    def to_s : String
+      @dice.reduce(nil) do |l, r|
+        if l
+          if r.min < 0 && r.max < 0
+            l + " - " + r.reverse.to_s
+          else
+            l + " + " + r.to_s
+          end
+        else
+          r.to_s
+        end
+      end.to_s
+    end
   end
 end
