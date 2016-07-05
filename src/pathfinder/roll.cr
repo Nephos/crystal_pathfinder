@@ -44,10 +44,18 @@ module Pathfinder
     def {{ ft.id }} : Int32
       @dice.reduce(0) { |r, l| r + l.{{ ft.id }} }
     end
+
+    def {{ (ft + "_details").id }} : Array(Int32)
+      @dice.map {|dice| dice.{{ (ft + "_details").id }} }.flatten
+    end
     {% end %}
 
     def average : Float64
       @dice.reduce(0.0) { |r, l| r + l.average }
+    end
+
+    def average_details : Array(Float64)
+      @dice.map { |dice| dice.average_details }.flatten
     end
   end
 end

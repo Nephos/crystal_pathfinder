@@ -15,7 +15,15 @@ describe Pathfinder::Roll do
 
   it "test (details)" do
     r = Pathfinder::Roll.new [Pathfinder::Dice.new(2, 6), Pathfinder::Dice.new(1, 4)]
-    # TODO
+    r.min_details.should eq([1, 1, 1])
+    r.max_details.should eq([6, 6, 4])
+    r.average_details.should eq([3.5, 3.5, 2.5])
+    10.times do
+      t = r.test_details
+      (1..6).includes?(t[0]).should eq true
+      (1..6).includes?(t[1]).should eq true
+      (1..4).includes?(t[2]).should eq true
+    end
   end
 
   it "parse (simple)" do
