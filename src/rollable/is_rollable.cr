@@ -1,5 +1,5 @@
-module Pathfinder
-  abstract class Rollable
+module Rollable
+  abstract class IsRollable
     abstract def min : Int32
     abstract def max : Int32
     abstract def average : Int32

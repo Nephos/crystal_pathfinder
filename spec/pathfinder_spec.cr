@@ -1,7 +1,7 @@
 require "./spec_helper"
-require "./pathfinder/*"
+require "./rollable/*"
 
-describe Pathfinder do
+describe Rollable do
   it "works" do
     false.should eq(false)
   end

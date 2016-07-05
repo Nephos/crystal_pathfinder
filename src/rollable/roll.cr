@@ -1,8 +1,9 @@
+require "./is_rollable"
 require "./die"
 require "./fixed_value"
 require "./dice"
 
-module Pathfinder
+module Rollable
   # `Roll` is a list of `Dice`.
   #
   # It is rollable, making the sum of each `Dice` values.
@@ -17,7 +18,7 @@ module Pathfinder
   # r.average                  # => 5.5
   # r.test                     # => the sum a a random value in 1..6 and 2
   # ```
-  class Roll
+  class Roll < IsRollable
     class ParsingError < Exception
     end
 

@@ -1,9 +1,9 @@
-describe Pathfinder::FixedValue do
+describe Rollable::FixedValue do
   it "new" do
     10.times do |i|
       n = i - 5
-      f = Pathfinder::FixedValue.new n
-      f.should be_a Pathfinder::Die
+      f = Rollable::FixedValue.new n
+      f.should be_a Rollable::Die
       f.min.should eq n
       f.max.should eq n
       f.average.should eq n

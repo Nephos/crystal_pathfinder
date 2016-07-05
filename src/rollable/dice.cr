@@ -1,8 +1,9 @@
 # coding: utf-8
+require "./is_rollable"
 require "./die"
 require "./fixed_value"
 
-module Pathfinder
+module Rollable
   # A `Dice` is a amount of `Die`.
   # It is rollable exactly like a classic `Die`
   #
@@ -17,19 +18,19 @@ module Pathfinder
   # d.average # => 7
   # d.test    # => the sum of 2 random values between 1..6
   # ```
-  class Dice
+  class Dice < IsRollable
     class ParsingError < Exception
     end
 
     @count : Int32
-    @die : Pathfinder::Die
+    @die : Rollable::Die
 
     def initialize(@count, @die)
     end
 
     # Create a `Dice` with "die_type" faces.
     def initialize(@count, die_type : Int32)
-      @die = Pathfinder::Die.new(1..die_type)
+      @die = Rollable::Die.new(1..die_type)
     end
 
     # Reverse the `Die` of the `Dice`.
@@ -50,15 +51,15 @@ module Pathfinder
     #
     # - If `strict` is false, then the string doesn't have to finish following
     # the regexp.
-    private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Pathfinder::Dice)
+    private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Rollable::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
       raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
       count = match[1]
       die = match[2]?
       if die.nil?
-        return {str: match[0], dice: Pathfinder::Dice.new(1, Pathfinder::FixedValue.new(count.to_i))}
+        return {str: match[0], dice: Rollable::Dice.new(1, Rollable::FixedValue.new(count.to_i))}
       else
-        return {str: match[0], dice: Pathfinder::Dice.new(count.to_i, die.to_i)}
+        return {str: match[0], dice: Rollable::Dice.new(count.to_i, die.to_i)}
       end
     end
 
@@ -75,7 +76,7 @@ module Pathfinder
     end
 
     # Returns the `Dice` parsed. (see #parse_string)
-    def self.parse(str : String, strict = true) : Pathfinder::Dice
+    def self.parse(str : String, strict = true) : Rollable::Dice
       data = parse_string(str, strict)
       return data[:dice]
     end

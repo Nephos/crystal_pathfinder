@@ -1,6 +1,6 @@
-require "./rollable"
+require "./is_rollable"
 
-module Pathfinder
+module Rollable
   # A `Die` is a range of Integer values.
   # It is rollable.
   #
@@ -12,7 +12,7 @@ module Pathfinder
   # d.average # => 3.5
   # d.test    # => a random value included in 1..6
   # ```
-  class Die < Rollable
+  class Die < IsRollable
     @faces : Range(Int32, Int32)
 
     def initialize(@faces)

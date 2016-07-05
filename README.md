@@ -1,4 +1,4 @@
-# pathfinder
+# rollable
 
 TODO: Write a description here
 
@@ -9,8 +9,8 @@ Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
-  pathfinder:
-    github: Nephos/crystal_pathfinder
+  rollable:
+    github: Nephos/crystal_rollable
 ```
 
 
@@ -18,8 +18,8 @@ dependencies:
 
 
 ```crystal
-require "pathfinder"
-Pathfinder::Roll.parse("2d6+4").test # => roll 2 dices and add 4 to the sum
+require "rollable"
+Rollable::Roll.parse("2d6+4").test # => roll 2 dices and add 4 to the sum
 ```
 
 
@@ -29,7 +29,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it ( https://github.com/Nephos/crystal_pathfinder/fork )
+1. Fork it ( https://github.com/Nephos/crystal_rollable/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
