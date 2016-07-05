@@ -1,7 +1,21 @@
+# coding: utf-8
 require "./die"
 require "./fixed_value"
 
 module Pathfinder
+  # A `Dice` is a amount of `Die`.
+  # It is rollable exactly like a classic `Die`
+  # It is also possible to get the details of a roll, using the methods
+  # `min_details`, `max_details`, `average_details`, `test_details`
+  #
+  # Example:
+  # ```
+  # d = Dice.parse "2d6"
+  # d.min     # => 2
+  # d.max     # => 12
+  # d.average # => 7
+  # d.test    # => the sum of 2 random values between 1..6
+  # ```
   class Dice
     class ParsingError < Exception
     end
@@ -16,11 +30,20 @@ module Pathfinder
       @die = Pathfinder::Die.new(1..die_type)
     end
 
+    # Reverse the values of the `Dice`.
+    #
+    # Example:
+    # ```
+    # Dice.parse("1d6").reverse # => -1d6
+    # ```
     def reverse : Dice
       Dice.new @count, @die.reverse
     end
 
-    # Returns the `Dice` parsed from `str`.
+    # Returns the `Dice` and the string parsed from `str`.
+    #
+    # If `strict` is true, then the string must end following the regex `\A\d+(d\d+)?\Z/i`
+    # If `strict` is false, then the string doesn't have to finish following the regexp.
     private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Pathfinder::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
       raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
@@ -33,13 +56,16 @@ module Pathfinder
       end
     end
 
-    # Yield the `Dice` parsed from `str`.
+    # Yields the `Dice` parsed from `str`.
+    # Then, it returns the string read.
+    # If strict is false, only the valid string is returned.
     def self.parse(str : String, strict = true) : String
       data = parse_string(str, strict)
       yield data[:dice]
       return data[:str]
     end
 
+    # Returns the `Dice` parsed
     def self.parse(str : String, strict = true) : Pathfinder::Dice
       data = parse_string(str, strict)
       return data[:dice]
@@ -52,7 +78,7 @@ module Pathfinder
     # rest = Dice.consume("1d6+2") do |dice|
     #   # dice = Dice.new(1, Die.new(1..6))
     # end
-    #   # rest = "+2"
+    # # rest = "+2"
     # ```
     def self.consume(str : String) : String?
       str = str.strip

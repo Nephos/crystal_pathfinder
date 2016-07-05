@@ -1,6 +1,17 @@
 require "./rollable"
 
 module Pathfinder
+  # A `Die` is a range of Integer values.
+  # It is rollable.
+  #
+  # Example:
+  # ```
+  # d = Die.new(1..6)
+  # d.min     # => 1
+  # d.max     # => 6
+  # d.average # => 3.5
+  # d.test    # => a random value included in 1..6
+  # ```
   class Die < Rollable
     @faces : Range(Int32, Int32)
 

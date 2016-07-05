@@ -3,6 +3,19 @@ require "./fixed_value"
 require "./dice"
 
 module Pathfinder
+  # `Roll` is a list of `Dice`.
+  # It is rollable, making the sum of each `Dice` values.
+  # It is also possible to get the details of a roll, using the methods
+  # `min_details`, `max_details`, `average_details`, `test_details`
+  #
+  # Example:
+  # ```
+  # r = Rollable.parse "1d6+2" # note: it also support "1d6 + 2"
+  # r.min                      # => 3
+  # r.max                      # => 9
+  # r.average                  # => 5.5
+  # r.test                     # => the sum a a random value in 1..6 and 2
+  # ```
   class Roll
     class ParsingError < Exception
     end
