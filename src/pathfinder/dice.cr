@@ -77,11 +77,15 @@ module Pathfinder
     end
 
     def average_details : Array(Float64)
-      @count.times.to_a.map{ @die.average }
+      @count.times.to_a.map { @die.average }
     end
 
     def test : Int32
       @count.times.reduce(0) { |r, l| r + @die.test }
+    end
+
+    def test_details : Array(Int32)
+      @count.times.to_a.map { @die.test }
     end
   end
 end

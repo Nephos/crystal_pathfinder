@@ -12,6 +12,9 @@ describe Pathfinder::Dice do
     d.min_details.should eq [1, 1]
     d.max_details.should eq [6, 6]
     d.average_details.should eq [3.5, 3.5]
+    10.times do
+      d.test_details.each { |v| (1..6).includes?(v).should eq(true) }
+    end
   end
 
   it "reverse" do

@@ -13,12 +13,12 @@ module Pathfinder
     end
 
     def reverse! : Roll
-      @dice.each{|die| die.reverse! }
+      @dice.each { |die| die.reverse! }
       self
     end
 
     def reverse : Roll
-      Roll.new @dice.map{|die| die.reverse }
+      Roll.new @dice.map { |die| die.reverse }
     end
 
     private def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
