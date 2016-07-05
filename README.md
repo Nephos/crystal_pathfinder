@@ -19,10 +19,9 @@ dependencies:
 
 ```crystal
 require "pathfinder"
+Pathfinder::Roll.parse("2d6+4").test # => roll 2 dices and add 4 to the sum
 ```
 
-
-TODO: Write usage instructions here
 
 ## Development
 
