@@ -19,9 +19,6 @@ module Rollable
   # r.test                     # => the sum a a random value in 1..6 and 2
   # ```
   class Roll < IsRollable
-    class ParsingError < Exception
-    end
-
     @dice : Array(Dice)
 
     def initialize(@dice)

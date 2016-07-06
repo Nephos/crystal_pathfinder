@@ -19,9 +19,6 @@ module Rollable
   # d.test    # => the sum of 2 random values between 1..6
   # ```
   class Dice < IsRollable
-    class ParsingError < Exception
-    end
-
     @count : Int32
     @die : Rollable::Die
 

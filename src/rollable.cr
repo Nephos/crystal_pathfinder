@@ -1,5 +1,6 @@
 require "./rollable/*"
 
 module Rollable
-  # TODO Put your code here
+  class ParsingError < Exception
+  end
 end
