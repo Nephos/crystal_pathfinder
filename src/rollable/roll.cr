@@ -16,7 +16,7 @@ module Rollable
   # r.min                      # => 3
   # r.max                      # => 9
   # r.average                  # => 5.5
-  # r.test                     # => the sum a a random value in 1..6 and 2
+  # r.test                     # => the sum of a random value in 1..6 and 2
   # ```
   class Roll < IsRollable
     @dice : Array(Dice)
