@@ -8,20 +8,18 @@ module Rollable
   # It is rollable exactly like a classic `Die`
   #
   # It is also possible to get the details of a roll, using the methods
-  # `min_details`, `max_details`, `average_details`, `test_details`
+  # `.min_details`, `.max_details`, `.average_details`, `.test_details`
   #
   # Example:
   # ```
   # d = Dice.parse "2d6"
-  # d.min     # => 2
-  # d.max     # => 12
-  # d.average # => 7
-  # d.test    # => the sum of 2 random values between 1..6
+  # d.min         # => 2
+  # d.max         # => 12
+  # d.average     # => 7
+  # d.min_details # => [1, 1]
+  # d.test        # => the sum of 2 random values between 1..6
   # ```
   class Dice < IsRollable
-    class ParsingError < Exception
-    end
-
     @count : Int32
     @die : Rollable::Die
 
@@ -46,11 +44,11 @@ module Rollable
     # Returns the `Dice` and the string parsed from `str`, in a `NamedTuple`
     # with "str" and "dice" keys.
     #
-    # - If `strict` is true, then the string must end following the regex
+    # - If "strict" is true, then the string must end following the regex
     #   `\A\d+(d\d+)?\Z/i`
     #
-    # - If `strict` is false, then the string doesn't have to finish following
-    # the regexp.
+    # - If "strict" is false, then the string doesn't have to finish following
+    #   the regexp.
     private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Rollable::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
       raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
@@ -63,7 +61,7 @@ module Rollable
       end
     end
 
-    # Return a valid string parsed from `str`. (see #parse_string)
+    # Return a valid string parsed from `str`. (see `#parse_string`)
     #
     # Yields the `Dice` parsed from `str`.
     #
@@ -75,7 +73,7 @@ module Rollable
       return data[:str]
     end
 
-    # Returns the `Dice` parsed. (see #parse_string)
+    # Returns the `Dice` parsed. (see `#parse_string`)
     def self.parse(str : String, strict = true) : Rollable::Dice
       data = parse_string(str, strict)
       return data[:dice]
@@ -110,12 +108,12 @@ module Rollable
     end
     {% end %}
 
-    # Roll a amount of dice as specified, and returns the sum
+    # Roll an amount of `Dice` as specified, and return the sum
     def test : Int32
       @count.times.reduce(0) { |r, l| r + @die.test }
     end
 
-    # Roll a amount of dice as specified, and returns the values
+    # Roll an amount of `Dice` as specified, and return the values
     def test_details : Array(Int32)
       @count.times.to_a.map { @die.test }
     end
@@ -128,6 +126,10 @@ module Rollable
       @count.times.to_a.map { @die.average }
     end
 
+    # Return a string which represents the `Dice`
+    #
+    # - If the value is fixed ```(n..n)```, then it return the @count * value
+    # - Else, it just add the count before the `Dice` like "{count}{dice.to_s}"
     def to_s : String
       if @die.size == 1
         (@count * @die.min).to_s
