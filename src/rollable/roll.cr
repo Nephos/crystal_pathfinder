@@ -8,7 +8,7 @@ module Rollable
   #
   # It is rollable, making the sum of each `Dice` values.
   # It is also possible to get the details of a roll, using the methods
-  # `min_details`, `max_details`, `average_details`, `test_details`
+  # `.min_details`, `.max_details`, `.average_details`, `.test_details`
   #
   # Example:
   # ```
@@ -27,12 +27,13 @@ module Rollable
     def initialize(@dice)
     end
 
+    # Reverse the values of the `Roll`.
     def reverse! : Roll
       @dice.each { |die| die.reverse! }
       self
     end
 
-    # Reverse the values of the `Roll`.
+    # Return a reversed copy of the  `Roll`'s values.
     #
     # Example:
     # ```
@@ -43,7 +44,18 @@ module Rollable
     end
 
     # Parse the string and return an array of `Dice`
-    private def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
+    #
+    # see `Dice.consume`
+    #
+    # The string passed as parameter is consumed, part by part, to create an
+    # Array of `Dice`. The string must follow grammar below (case insensitive):
+    # ```text
+    # - dice = [\d+][d][\d+]
+    # - sign = ['+', '-']
+    # - sdice = [sign]?[dice]
+    # - roll = [sign][dice][sdice]*
+    # ```
+    def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
       return list if str.nil?
       str = str.strip
       sign = str[0]
@@ -58,7 +70,8 @@ module Rollable
       return list
     end
 
-    # Parse the string and returns a new `Roll` object
+    # Parse the string "str" and returns a new `Roll` object
+    # see `#parse_str`
     def self.parse(str : String) : Roll
       return Roll.new(parse_str(str))
     end

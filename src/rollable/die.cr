@@ -40,19 +40,27 @@ module Rollable
       @faces.begin
     end
 
-    # Returns a random value in the range of the dice
+    # Return a random value in the range of the dice
     def test : Int32
       @faces.to_a.sample
     end
 
+    # Mathematical expectation.
+    #
+    # A d6 will have a expected value of 3.5
     def average : Float64
       @faces.reduce { |r, l| r + l }.to_f64 / @faces.size
     end
 
+    # Number of faces of the `Die`
     def size
       @faces.size
     end
 
+    # Return a string.
+    # - It may be a fixed value ```(n..n) => "#{n}"```
+    # - It may be a dice ```(1..n) => "D#{n}"```
+    # - Else, ```(a..b) => "D(#{a},#{b})"```
     def to_s : String
       if self.size == 1
         min.to_s

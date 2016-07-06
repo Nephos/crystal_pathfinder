@@ -8,7 +8,7 @@ module Rollable
   # It is rollable exactly like a classic `Die`
   #
   # It is also possible to get the details of a roll, using the methods
-  # `min_details`, `max_details`, `average_details`, `test_details`
+  # `.min_details`, `.max_details`, `.average_details`, `.test_details`
   #
   # Example:
   # ```
@@ -46,10 +46,10 @@ module Rollable
     # Returns the `Dice` and the string parsed from `str`, in a `NamedTuple`
     # with "str" and "dice" keys.
     #
-    # - If `strict` is true, then the string must end following the regex
+    # - If "strict" is true, then the string must end following the regex
     #   `\A\d+(d\d+)?\Z/i`
     #
-    # - If `strict` is false, then the string doesn't have to finish following
+    # - If "strict" is false, then the string doesn't have to finish following
     # the regexp.
     private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Rollable::Dice)
       match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
@@ -63,7 +63,7 @@ module Rollable
       end
     end
 
-    # Return a valid string parsed from `str`. (see #parse_string)
+    # Return a valid string parsed from `str`. (see `#parse_string`)
     #
     # Yields the `Dice` parsed from `str`.
     #
@@ -75,7 +75,7 @@ module Rollable
       return data[:str]
     end
 
-    # Returns the `Dice` parsed. (see #parse_string)
+    # Returns the `Dice` parsed. (see `#parse_string`)
     def self.parse(str : String, strict = true) : Rollable::Dice
       data = parse_string(str, strict)
       return data[:dice]
