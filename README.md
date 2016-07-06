@@ -2,7 +2,7 @@
 
 TODO: Write a description here
 
-## Installation
+## Installation [![travis](https://travis-ci.org/Nephos/crystal_rollable.svg)](https://travis-ci.org/Nephos/crystal_rollable)
 
 
 Add this to your application's `shard.yml`:
