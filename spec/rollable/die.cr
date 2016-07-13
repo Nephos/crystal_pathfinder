@@ -60,7 +60,10 @@ describe Rollable::Die do
     (Rollable::Die.new(1..20) <= Rollable::Die.new(1..10)).should eq false
     (Rollable::Die.new(1..10) <= Rollable::Die.new(1..20)).should eq true
 
-    (Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4)).should eq false
+    #(Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4) == 0).should eq true
+    ((Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4)) == 0).should eq false
+    ((Rollable::Die.new(1..4) <=> Rollable::Die.new(1..4)) == 0).should eq true
+    ((Rollable::Die.new(2..3) <=> Rollable::Die.new(1..4)) < 0).should eq true
     (Rollable::Die.new(2..6) == Rollable::Die.new(4..4)).should eq false
   end
 end

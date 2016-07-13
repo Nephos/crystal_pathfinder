@@ -122,7 +122,16 @@ module Rollable
     {% end %}
 
     def <=>(right : Roll)
-      average != right.average
+      average != right.average ?
+      average - right.average :
+      max != right.max ?
+      max - right.max :
+      min - right.min
+    end
+
+    def order!
+      @dices.sort{|a| a <=> b }
+      self
     end
   end
 end

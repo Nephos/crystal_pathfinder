@@ -62,6 +62,10 @@ describe Rollable::Dice do
     (Rollable::Dice.parse("2d8") >= Rollable::Dice.parse("2d6")).should eq true
     (Rollable::Dice.parse("2d4") < Rollable::Dice.parse("2d6")).should eq true
     (Rollable::Dice.parse("2d4") <= Rollable::Dice.parse("2d6")).should eq true
-    (Rollable::Dice.parse("2d4") <=> Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d4") <=> Rollable::Dice.parse("2d6") < 0).should eq true
+    ((Rollable::Dice.parse("2d6") <=> Rollable::Dice.parse("2d6")) == 0)
+    ((Rollable::Dice.parse("3d6") <=> Rollable::Dice.parse("2d6")) > 0)
+    ((Rollable::Dice.parse("1d6") <=> Rollable::Dice.parse("2d6")) < 0)
+    (Rollable::Dice.parse("2d6") <=> Rollable::Dice.parse("2d4") > 0).should eq true
   end
 end

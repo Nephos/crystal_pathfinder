@@ -88,7 +88,11 @@ module Rollable
     {% end %}
 
     def <=>(right : Die)
-      average != right.average
+      average != right.average ?
+      average - right.average :
+      max != right.max ?
+      max - right.max :
+      min - right.min
     end
   end
 end
