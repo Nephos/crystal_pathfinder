@@ -34,4 +34,33 @@ describe Rollable::Die do
     Rollable::Die.new(2..2).to_s.should eq "2"
     Rollable::Die.new(2..4).to_s.should eq "D(2,4)"
   end
+
+  it "cmp" do
+    (Rollable::Die.new(1..20) == Rollable::Die.new(1..20)).should eq true
+    (Rollable::Die.new(1..20) == Rollable::Die.new(1..10)).should eq false
+    (Rollable::Die.new(1..10) == Rollable::Die.new(1..20)).should eq false
+
+    (Rollable::Die.new(1..20) != Rollable::Die.new(1..20)).should eq false
+    (Rollable::Die.new(1..20) != Rollable::Die.new(1..10)).should eq true
+    (Rollable::Die.new(1..10) != Rollable::Die.new(1..20)).should eq true
+
+    (Rollable::Die.new(1..20) > Rollable::Die.new(1..20)).should eq false
+    (Rollable::Die.new(1..20) > Rollable::Die.new(1..10)).should eq true
+    (Rollable::Die.new(1..10) > Rollable::Die.new(1..20)).should eq false
+
+    (Rollable::Die.new(1..20) >= Rollable::Die.new(1..20)).should eq true
+    (Rollable::Die.new(1..20) >= Rollable::Die.new(1..10)).should eq true
+    (Rollable::Die.new(1..10) >= Rollable::Die.new(1..20)).should eq false
+
+    (Rollable::Die.new(1..20) < Rollable::Die.new(1..20)).should eq false
+    (Rollable::Die.new(1..20) < Rollable::Die.new(1..10)).should eq false
+    (Rollable::Die.new(1..10) < Rollable::Die.new(1..20)).should eq true
+
+    (Rollable::Die.new(1..20) <= Rollable::Die.new(1..20)).should eq true
+    (Rollable::Die.new(1..20) <= Rollable::Die.new(1..10)).should eq false
+    (Rollable::Die.new(1..10) <= Rollable::Die.new(1..20)).should eq true
+
+    (Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4)).should eq false
+    (Rollable::Die.new(2..6) == Rollable::Die.new(4..4)).should eq false
+  end
 end

@@ -15,6 +15,8 @@ module Rollable
   class Die < IsRollable
     @faces : Range(Int32, Int32)
 
+    getter faces
+
     def initialize(@faces)
     end
 
@@ -69,6 +71,34 @@ module Rollable
       else
         "D(#{self.min},#{self.max})"
       end
+    end
+
+    def ==(right : Die)
+      @faces == right.faces
+    end
+
+    # TODO: discuss
+    def >(right : Die)
+      average > right.average
+    end
+
+    # TODO: discuss
+    def <(right : Die)
+      average < right.average
+    end
+
+    # TODO: discuss
+    def >=(right : Die)
+      average >= right.average
+    end
+
+    # TODO: discuss
+    def <=(right : Die)
+      average <= right.average
+    end
+
+    def <=>(right : Die)
+      average != right.average
     end
   end
 end
