@@ -78,11 +78,11 @@ describe Rollable::Roll do
   #   r.compact!
   #   r.to_s.should eq("2d6")
   # end
-  #
-  # it "order" do
-  #   r = Rollable::Roll.parse("1d4+1d6")
-  #   r.to_s.should eq("1d4 + 1d6")
-  #   r.order!
-  #   r.to_s.should eq("1d6 + 1d4")
-  # end
+
+  it "order" do
+    r = Rollable::Roll.parse("1d4+1d6")
+    r.to_s.should eq("1D4 + 1D6")
+    r.order!
+    r.to_s.should eq("1D6 + 1D4")
+  end
 end

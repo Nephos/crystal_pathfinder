@@ -156,10 +156,10 @@ module Rollable
 
     def <=>(right : Dice)
       average != right.average ?
-      average - right.average :
+      average - right.average <=> 0 :
       max != right.max ?
-      max - right.max :
-      min - right.min
+      max - right.max <=> 0 :
+      min - right.min <=> 0
     end
   end
 end
