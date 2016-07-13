@@ -58,9 +58,9 @@ describe Rollable::Roll do
   end
 
   it "cmp" do
-    r1 = Rollable::Roll.parse("2d6+1")
-    r2 = Rollable::Roll.parse("2d6+2")
-    r3 = Rollable::Roll.parse("2d8")
+    r1 = Rollable::Roll.parse("2D6+1")
+    r2 = Rollable::Roll.parse("2D6+2")
+    r3 = Rollable::Roll.parse("2D8")
     # same tests than Dice and Die
     (r1 == r1).should eq true
     (r1 == r2).should eq false
@@ -72,15 +72,16 @@ describe Rollable::Roll do
     ((r2 <=> r3) < 0).should eq true
   end
 
-  # it "compact" do
-  #   r = Rollable::Roll.parse("1d6+1d6")
-  #   r.to_s.should eq("1d6 + 1d6")
-  #   r.compact!
-  #   r.to_s.should eq("2d6")
-  # end
+  it "compact" do
+    r = Rollable::Roll.parse("1D6+1D6")
+    r.to_s.should eq("1D6 + 1D6")
+    r.compact!
+    r.to_s.should eq("2D6")
+    Rollable::Roll.parse("1D6+1D6+1D4+2D6+1D4").compact!.to_s.should eq("4D6 + 2D4")
+  end
 
   it "order" do
-    r = Rollable::Roll.parse("1d4+1d6")
+    r = Rollable::Roll.parse("1D4+1D6")
     r.to_s.should eq("1D4 + 1D6")
     r.order.to_s.should eq("1D6 + 1D4")
     r.to_s.should eq("1D4 + 1D6")

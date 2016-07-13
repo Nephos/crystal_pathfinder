@@ -26,6 +26,10 @@ module Rollable
     def initialize(@dice)
     end
 
+    def clone
+      Roll.new(@dice.clone)
+    end
+
     # Reverse the values of the `Roll`.
     def reverse! : Roll
       @dice.each { |die| die.reverse! }
@@ -135,7 +139,34 @@ module Rollable
     end
 
     def order
-      Roll.new(@dice.clone).order!
+      clone.order!
+    end
+
+    # let a [1d6, 1d4, 1d6, 2, 2d6]
+    # first, we copy it
+    # for 1d6 we check evey d6 in the copy, fetch and delete them
+    def compact!
+      i = 0
+      until i >= @dice.size
+        # fetch the current dice
+        dice_current = @dice[i]
+        dice_type = dice_current.die
+        dice_count = dice_current.count
+        # fetch all dice with the same type
+        selected = @dice[(i+1)..(-1)].map_with_index{|d, idx| {d, i + idx} }
+        selected.select!{|t| t[0].die == dice_type }
+        # delete them from @dice
+        deleted = selected.map{|t| @dice.delete_at t[1] }
+        # add them to the dice_count and update it
+        selected.each{|t| dice_count += t[0].count }
+        @dice[i].count = dice_count
+        i = i + 1
+      end
+      self
+    end
+
+    def compact
+      clone.compact!
     end
   end
 end

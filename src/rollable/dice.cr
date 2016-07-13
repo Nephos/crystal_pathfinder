@@ -24,6 +24,7 @@ module Rollable
     @die : Rollable::Die
 
     getter count, die
+    setter count
 
     def initialize(@count, @die)
     end
