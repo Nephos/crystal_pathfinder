@@ -35,8 +35,9 @@ module Rollable
 
     def to_s : String
       @dice.reduce(nil) do |l, r|
+        # puts "l:#{l.to_s}, r:#{r.to_s}"
         if l
-          if r.min < 0 && r.max < 0
+          if r.negative?
             l + " - " + r.reverse.to_s
           else
             l + " + " + r.to_s

@@ -66,16 +66,9 @@ module Rollable
     # - Else, it just add the count before the `Dice` like "{count}{dice.to_s}"
     def to_s : String
       if fixed?
-        (@count * @die.min).to_s
+        (negative? ? "-" : "") + (@count * @die.min).abs.to_s
       else
-        case @count <=> 0
-        when -1
-          "-#{-@count}"
-        when 1
-          @count.to_s
-        else
-          "#{@count}"
-        end + @die.to_s
+        (negative? ? "-" : "") + "#{@count}" + (negative? ? @die.reverse : @die).to_s
       end
     end
   end

@@ -37,8 +37,9 @@ describe Rollable::Dice do
     Rollable::Dice.parse("4d6").min.should eq 4
     Rollable::Dice.parse("4d6").max.should eq 24
     Rollable::Dice.parse("1d6+1", false).min.should eq 1
-    Rollable::Dice.parse("-1d6").min.should eq -1
-    Rollable::Dice.parse("-1d6").max.should eq -6
+    Rollable::Dice.parse("-1d6").min.should eq -6
+    Rollable::Dice.parse("-1d6").max.should eq -1
+    Rollable::Dice.parse("-1d6").count.should eq 1
   end
 
   it "parse (error)" do

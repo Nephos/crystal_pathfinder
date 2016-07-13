@@ -108,7 +108,7 @@ module Rollable
           if @dice[j].die == dice_type
             @dice[i].count += @dice[j].count
           elsif @dice[j].die == dice_type.reverse
-            @dice[i].count += @dice[j].count
+            @dice[i].count -= @dice[j].count
           else
             next
           end

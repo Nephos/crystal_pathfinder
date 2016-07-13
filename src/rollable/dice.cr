@@ -26,15 +26,16 @@ module Rollable
     getter count, die
 
     def initialize(@count, @die)
-      check_count
+      check_count!
     end
 
     # Create a `Dice` with "die_type" faces.
     def initialize(@count, die_type : Int32)
       @die = Die.new(1..die_type)
+      check_count!
     end
 
-    private def check_count
+    private def check_count!
       if @count < 0
         @count = -@count
         @die.reverse!
@@ -44,16 +45,15 @@ module Rollable
 
     def count=(count : Int32)
       @count = count
-      check_count
+      check_count!
     end
 
     def clone
       Dice.new(@count, @die.clone)
     end
 
-    def fixed?
-      @die.fixed?
-    end
+    delegate "fixed?", to: die
+    delegate "negative?", to: die
 
     # Reverse the `Die` of the `Dice`.
     #

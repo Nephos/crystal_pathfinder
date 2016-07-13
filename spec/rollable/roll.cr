@@ -55,7 +55,7 @@ describe Rollable::Roll do
 
   it "to_s" do
     Rollable::Roll.parse("1d6").to_s.should eq("1D6")
-    Rollable::Roll.parse("-1d6").to_s.should eq("- 1D6")
+    Rollable::Roll.parse("-1d6").to_s.should eq("-1D6")
     Rollable::Roll.parse(" 1d6 - 1 + 2 - 1d6 ").to_s.should eq("1D6 - 1 + 2 - 1D6")
   end
 
@@ -85,7 +85,7 @@ describe Rollable::Roll do
     Rollable::Roll.parse("1 + 1d6").compact!.to_s.should eq("1D6 + 1")
     Rollable::Roll.parse("1 + 2d6 + 3").compact!.to_s.should eq("2D6 + 4")
     Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 + 1d6 + 1 + 1d6").compact!.to_s.should eq "4D8 + 3D6 + 1D20 + 9"
-    Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 - 1d6 - 1 + 1d6").compact!.to_s.should eq "4d8 + 1D6 + 1d20 + 7"
+    Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 - 1d6 - 1 + 1d6").compact!.to_s.should eq "4D8 + 1D6 + 1D20 + 7"
   end
 
   it "order" do
