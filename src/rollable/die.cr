@@ -29,6 +29,23 @@ module Rollable
       @faces = 1..nb_faces
     end
 
+    # Number of faces of the `Die`
+    def size
+      @faces.size
+    end
+
+    def fixed?
+      size == 1
+    end
+
+    def negative?
+      min < 0 && max < 0
+    end
+
+    def like?(other : Die)
+      @faces == other.faces || @faces == other.reverse.faces
+    end
+
     # Reverse the values
     #
     # Example:
@@ -37,6 +54,11 @@ module Rollable
     # ```
     def reverse : Die
       Die.new -max..-min
+    end
+
+    def reverse!
+      @faces = -max..-min
+      self
     end
 
     def max : Int32
@@ -57,11 +79,6 @@ module Rollable
     # A d6 will have a expected value of 3.5
     def average : Float64
       @faces.reduce { |r, l| r + l }.to_f64 / @faces.size
-    end
-
-    # Number of faces of the `Die`
-    def size
-      @faces.size
     end
 
     # Return a string.
@@ -93,11 +110,7 @@ module Rollable
     {% end %}
 
     def <=>(right : Die)
-      average != right.average ?
-      average - right.average <=> 0 :
-      max != right.max ?
-      max - right.max <=> 0 :
-      min - right.min <=> 0
+      average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
     end
   end
 end

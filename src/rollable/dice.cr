@@ -21,21 +21,38 @@ module Rollable
   # ```
   class Dice < IsRollable
     @count : Int32
-    @die : Rollable::Die
+    @die : Die
 
     getter count, die
-    setter count
 
     def initialize(@count, @die)
+      check_count
+    end
+
+    # Create a `Dice` with "die_type" faces.
+    def initialize(@count, die_type : Int32)
+      @die = Die.new(1..die_type)
+    end
+
+    private def check_count
+      if @count < 0
+        @count = -@count
+        @die.reverse!
+      end
+      self
+    end
+
+    def count=(count : Int32)
+      @count = count
+      check_count
     end
 
     def clone
       Dice.new(@count, @die.clone)
     end
 
-    # Create a `Dice` with "die_type" faces.
-    def initialize(@count, die_type : Int32)
-      @die = Rollable::Die.new(1..die_type)
+    def fixed?
+      @die.fixed?
     end
 
     # Reverse the `Die` of the `Dice`.
@@ -45,64 +62,12 @@ module Rollable
     # Dice.parse("1d6").reverse # => -1d6
     # ```
     def reverse : Dice
-      Dice.new @count, @die.reverse
+      Dice.new -@count, @die
     end
 
-    # Returns the `Dice` and the string parsed from `str`, in a `NamedTuple`
-    # with "str" and "dice" keys.
-    #
-    # - If "strict" is true, then the string must end following the regex
-    #   `\A\d+(d\d+)?\Z/i`
-    #
-    # - If "strict" is false, then the string doesn't have to finish following
-    #   the regexp.
-    private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Rollable::Dice)
-      match = str.match(/\A(\d+)(?:(?:d)(\d+))?#{strict ? "\\Z" : ""}/i)
-      raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
-      count = match[1]
-      die = match[2]?
-      if die.nil?
-        return {str: match[0], dice: Rollable::Dice.new(1, Rollable::FixedValue.new(count.to_i))}
-      else
-        return {str: match[0], dice: Rollable::Dice.new(count.to_i, die.to_i)}
-      end
-    end
-
-    # Return a valid string parsed from `str`. (see `#parse_string`)
-    #
-    # Yields the `Dice` parsed from `str`.
-    #
-    # Then, it returns the string read.
-    # If strict is false, only the valid string is returned.
-    def self.parse(str : String, strict = true) : String
-      data = parse_string(str, strict)
-      yield data[:dice]
-      return data[:str]
-    end
-
-    # Returns the `Dice` parsed. (see `#parse_string`)
-    def self.parse(str : String, strict = true) : Rollable::Dice
-      data = parse_string(str, strict)
-      return data[:dice]
-    end
-
-    # Returns the unconsumed string.
-    #
-    # Parse `str`, and yield a `Dice` parsed.
-    # It does not requires to be a full valid string
-    # (see #parse when strict is false).
-    # ```
-    # rest = Dice.consume("1d6+2") do |dice|
-    #   # dice = Dice.new(1, Die.new(1..6))
-    # end
-    # # rest = "+2"
-    # ```
-    def self.consume(str : String) : String?
-      str = str.strip
-      consumed = parse(str, false) do |dice|
-        yield dice
-      end
-      return consumed.size >= str.size ? nil : str[consumed.size..-1]
+    def reverse!
+      @die.reverse!
+      self
     end
 
     {% for ft in ["min", "max"] %}
@@ -133,18 +98,6 @@ module Rollable
       @count.times.to_a.map { @die.average }
     end
 
-    # Return a string which represents the `Dice`
-    #
-    # - If the value is fixed ```(n..n)```, then it return the @count * value
-    # - Else, it just add the count before the `Dice` like "{count}{dice.to_s}"
-    def to_s : String
-      if @die.size == 1
-        (@count * @die.min).to_s
-      else
-        "#{@count}#{@die.to_s}"
-      end
-    end
-
     def ==(right : Dice)
       @count == right.count && @die == right.die
     end
@@ -160,11 +113,9 @@ module Rollable
     {% end %}
 
     def <=>(right : Dice)
-      average != right.average ?
-      average - right.average <=> 0 :
-      max != right.max ?
-      max - right.max <=> 0 :
-      min - right.min <=> 0
+      average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
     end
   end
 end
+
+require "./dice/*"

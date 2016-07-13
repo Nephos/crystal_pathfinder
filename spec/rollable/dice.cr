@@ -19,9 +19,13 @@ describe Rollable::Dice do
 
   it "reverse" do
     d = Rollable::Dice.new(2, 20).reverse
+    d.count.should eq 2
+    d.die.min.should eq -20
     d.min.should eq -40
     d.max.should eq -2
     d = Rollable::Dice.new(1, 1).reverse
+    d.count.should eq 1
+    d.die.min.should eq -1
     d.min.should eq -1
     d.max.should eq -1
   end
@@ -33,11 +37,14 @@ describe Rollable::Dice do
     Rollable::Dice.parse("4d6").min.should eq 4
     Rollable::Dice.parse("4d6").max.should eq 24
     Rollable::Dice.parse("1d6+1", false).min.should eq 1
+    Rollable::Dice.parse("-1d6").min.should eq -1
+    Rollable::Dice.parse("-1d6").max.should eq -6
   end
 
   it "parse (error)" do
     expect_raises { Rollable::Dice.parse("yolo") }
     expect_raises { Rollable::Dice.parse("1d6+1", true) }
+    expect_raises { Rollable::Dice.parse("--1d4") }
   end
 
   it "consume" do
@@ -51,7 +58,9 @@ describe Rollable::Dice do
 
   it "to_s" do
     Rollable::Dice.parse("2d6").to_s.should eq("2D6")
+    Rollable::Dice.parse("-2d6").to_s.should eq("-2D6")
     Rollable::Dice.parse("2").to_s.should eq("2")
+    Rollable::Dice.new(1, Rollable::Die.new(2..2)).to_s.should eq("2")
   end
 
   it "cmp" do

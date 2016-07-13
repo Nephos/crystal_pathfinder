@@ -7,12 +7,18 @@ module Rollable
   #
   # This is equivalent to
   # ```
-  # Dice.new(n..n) # => FixedValue.new n
+  # Die.new(n..n)              # => FixedValue.new_die n
+  # Dice.new(1, Die.new(n..n)) # => FixedValue.new_dice n
   # ```
   module FixedValue
     # Return a `Die` with only one face.
-    def self.new(value : Int32)
-      Rollable::Die.new(value..value)
+    def self.new_die(value : Int32)
+      Die.new value..value
+    end
+
+    # Return a `Dice` with only one face.
+    def self.new_dice(fixed : Int32)
+      Dice.new 1, FixedValue.new_die(fixed)
     end
   end
 end

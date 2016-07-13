@@ -22,6 +22,24 @@ describe Rollable::Die do
     end
   end
 
+  it "like?" do
+    Rollable::Die.new(1..20).like?(Rollable::Die.new(1..20)).should eq true
+    Rollable::Die.new(1..20).like?(Rollable::Die.new(-20..-1)).should eq true
+    Rollable::Die.new(1..20).like?(Rollable::Die.new(1..10)).should eq false
+  end
+
+  it "negative?" do
+    Rollable::Die.new(1..20).negative?.should eq false
+    Rollable::Die.new(-1..20).negative?.should eq false
+    Rollable::Die.new(-1..-20).negative?.should eq true
+  end
+
+  it "fixed?" do
+    Rollable::Die.new(1..20).fixed?.should eq false
+    Rollable::Die.new(1..1).fixed?.should eq true
+    Rollable::Die.new(20..20).fixed?.should eq true
+  end
+
   it "reverse" do
     Rollable::Die.new(1..20).reverse.min.should eq -20
     Rollable::Die.new(1..20).reverse.max.should eq -1
@@ -60,7 +78,7 @@ describe Rollable::Die do
     (Rollable::Die.new(1..20) <= Rollable::Die.new(1..10)).should eq false
     (Rollable::Die.new(1..10) <= Rollable::Die.new(1..20)).should eq true
 
-    #(Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4) == 0).should eq true
+    # (Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4) == 0).should eq true
     ((Rollable::Die.new(2..6) <=> Rollable::Die.new(4..4)) == 0).should eq false
     ((Rollable::Die.new(1..4) <=> Rollable::Die.new(1..4)) == 0).should eq true
     ((Rollable::Die.new(2..3) <=> Rollable::Die.new(1..4)) < 0).should eq true

@@ -2,7 +2,7 @@ describe Rollable::Roll do
   it "initialize" do
     r = Rollable::Roll.new [
       Rollable::Dice.new(1, 20),
-      Rollable::Dice.new(1, Rollable::FixedValue.new 4),
+      Rollable::FixedValue.new_dice(4),
     ]
     r.should be_a Rollable::Roll
     r.min.should eq 5
@@ -54,12 +54,14 @@ describe Rollable::Roll do
   end
 
   it "to_s" do
+    Rollable::Roll.parse("1d6").to_s.should eq("1D6")
+    Rollable::Roll.parse("-1d6").to_s.should eq("- 1D6")
     Rollable::Roll.parse(" 1d6 - 1 + 2 - 1d6 ").to_s.should eq("1D6 - 1 + 2 - 1D6")
   end
 
   it "cmp" do
-    r1 = Rollable::Roll.parse("2D6+1")
-    r2 = Rollable::Roll.parse("2D6+2")
+    r1 = Rollable::Roll.parse("2D6 + 1")
+    r2 = Rollable::Roll.parse("2D6 + 2")
     r3 = Rollable::Roll.parse("2D8")
     # same tests than Dice and Die
     (r1 == r1).should eq true
@@ -73,15 +75,21 @@ describe Rollable::Roll do
   end
 
   it "compact" do
-    r = Rollable::Roll.parse("1D6+1D6")
+    r = Rollable::Roll.parse("1D6 + 1D6")
     r.to_s.should eq("1D6 + 1D6")
     r.compact!
     r.to_s.should eq("2D6")
-    Rollable::Roll.parse("1D6+1D6+1D4+2D6+1D4").compact!.to_s.should eq("4D6 + 2D4")
+    Rollable::Roll.parse("1D6 + 1D6 + 1D4 + 2D6 + 1D4").compact!.to_s.should eq("4D6 + 2D4")
+    Rollable::Roll.parse("1 + 1").compact!.to_s.should eq("2")
+    Rollable::Roll.parse("1 + 1 + 2").compact!.to_s.should eq("4")
+    Rollable::Roll.parse("1 + 1d6").compact!.to_s.should eq("1D6 + 1")
+    Rollable::Roll.parse("1 + 2d6 + 3").compact!.to_s.should eq("2D6 + 4")
+    Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 + 1d6 + 1 + 1d6").compact!.to_s.should eq "4D8 + 3D6 + 1D20 + 9"
+    Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 - 1d6 - 1 + 1d6").compact!.to_s.should eq "4d8 + 1D6 + 1d20 + 7"
   end
 
   it "order" do
-    r = Rollable::Roll.parse("1D4+1D6")
+    r = Rollable::Roll.parse("1D4 + 1D6")
     r.to_s.should eq("1D4 + 1D6")
     r.order.to_s.should eq("1D6 + 1D4")
     r.to_s.should eq("1D4 + 1D6")

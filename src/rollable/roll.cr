@@ -46,39 +46,6 @@ module Rollable
       Roll.new @dice.map { |die| die.reverse }
     end
 
-    # Parse the string and return an array of `Dice`
-    #
-    # see `Dice.consume`
-    #
-    # The string passed as parameter is consumed, part by part, to create an
-    # Array of `Dice`. The string must follow grammar below (case insensitive):
-    # ```text
-    # - dice = [\d+][d][\d+]
-    # - sign = ['+', '-']
-    # - sdice = [sign]?[dice]
-    # - roll = [sign][dice][sdice]*
-    # ```
-    def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
-      return list if str.nil?
-      str = str.strip
-      sign = str[0]
-      if sign != '+' && sign != '-' && !list.empty?
-        raise ParsingError.new("Parsing Error: roll, near to '#{str}'")
-      end
-      str = str[1..-1] if sign == '-' || sign == '+'
-      rest = Dice.consume(str) do |dice|
-        list << (sign == '-' ? dice.reverse : dice)
-      end
-      parse_str(rest, list)
-      return list
-    end
-
-    # Parse the string "str" and returns a new `Roll` object
-    # see `#parse_str`
-    def self.parse(str : String) : Roll
-      return Roll.new(parse_str(str))
-    end
-
     {% for ft in ["min", "max", "test"] %}
     def {{ ft.id }} : Int32
       @dice.reduce(0) { |r, l| r + l.{{ ft.id }} }
@@ -97,22 +64,8 @@ module Rollable
       @dice.map { |dice| dice.average_details }.flatten
     end
 
-    def to_s : String
-      @dice.reduce(nil) do |l, r|
-        if l
-          if r.min < 0 && r.max < 0
-            l + " - " + r.reverse.to_s
-          else
-            l + " + " + r.to_s
-          end
-        else
-          r.to_s
-        end
-      end.to_s
-    end
-
     def ==(right : Roll)
-      @dice.size == right.dice.size && @dice.map_with_index{|e, i| right.dice[i] == e }.all?{|e| e == true }
+      @dice.size == right.dice.size && @dice.map_with_index { |e, i| right.dice[i] == e }.all? { |e| e == true }
     end
 
     {% for op in [">", "<", ">=", "<="] %}
@@ -126,15 +79,11 @@ module Rollable
     {% end %}
 
     def <=>(right : Roll) : Int32
-      average != right.average ?
-      average - right.average <=> 0 :
-      max != right.max ?
-      max - right.max <=> 0 :
-      min - right.min <=> 0
+      average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
     end
 
     def order!
-      @dice.sort!{|a, b| b <=> a }
+      @dice.sort! { |a, b| b <=> a }
       self
     end
 
@@ -153,16 +102,34 @@ module Rollable
         dice_type = dice_current.die
         dice_count = dice_current.count
         # fetch all dice with the same type
-        selected = @dice[(i+1)..(-1)].map_with_index{|d, idx| {d, i + idx} }
-        selected.select!{|t| t[0].die == dice_type }
-        # delete them from @dice
-        deleted = selected.map{|t| @dice.delete_at t[1] }
-        # add them to the dice_count and update it
-        selected.each{|t| dice_count += t[0].count }
-        @dice[i].count = dice_count
+        j = @dice.size
+        until i >= j - 1
+          j = j - 1
+          if @dice[j].die == dice_type
+            @dice[i].count += @dice[j].count
+          elsif @dice[j].die == dice_type.reverse
+            @dice[i].count += @dice[j].count
+          else
+            next
+          end
+          @dice.delete_at j
+        end
         i = i + 1
       end
+      compact_fixed!
       self
+    end
+
+    private def compact_fixed!
+      fixed = @dice.map_with_index { |d, idx| {d, idx} }
+      fixed.select! { |t| t[0].die.fixed? }
+      idx = 0
+      fixed_dice = fixed.map do |t|
+        @dice.delete_at(t[1] - idx)
+        idx = idx + 1
+        t[0].max
+      end.sum
+      @dice << FixedValue.new_dice(fixed_dice) if fixed_dice != 0
     end
 
     def compact
@@ -170,3 +137,5 @@ module Rollable
     end
   end
 end
+
+require "./roll/*"
