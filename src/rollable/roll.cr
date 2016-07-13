@@ -30,6 +30,8 @@ module Rollable
       Roll.new(@dice.clone)
     end
 
+    delegate size, to: @dice
+
     # Reverse the values of the `Roll`.
     def reverse! : Roll
       @dice.each { |die| die.reverse! }
@@ -117,6 +119,7 @@ module Rollable
         i = i + 1
       end
       compact_fixed!
+      compact_empty!
       self
     end
 
@@ -130,6 +133,14 @@ module Rollable
         t[0].max
       end.sum
       @dice << FixedValue.new_dice(fixed_dice) if fixed_dice != 0
+    end
+
+    private def compact_empty!
+      i = @dice.size - 1
+      until i < 0
+        @dice.delete_at(i) if @dice[i].count == 0
+        i = i - 1
+      end
     end
 
     def compact
