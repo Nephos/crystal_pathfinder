@@ -56,4 +56,19 @@ describe Rollable::Roll do
   it "to_s" do
     Rollable::Roll.parse(" 1d6 - 1 + 2 - 1d6 ").to_s.should eq("1D6 - 1 + 2 - 1D6")
   end
+
+  it "cmp" do
+    r1 = Rollable::Roll.parse("2d6+1")
+    r2 = Rollable::Roll.parse("2d6+2")
+    r3 = Rollable::Roll.parse("2d8")
+    # same tests than Dice and Die
+    (r1 == r1).should eq true
+    (r1 == r2).should eq false
+    (r1 == r3).should eq false
+
+    (r2 == r3).should eq false
+    (r2 >= r3).should eq true
+    (r2 <= r3).should eq true
+    (r2 <=> r3).should eq false
+  end
 end

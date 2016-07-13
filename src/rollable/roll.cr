@@ -21,6 +21,8 @@ module Rollable
   class Roll < IsRollable
     @dice : Array(Dice)
 
+    getter dice
+
     def initialize(@dice)
     end
 
@@ -103,6 +105,20 @@ module Rollable
           r.to_s
         end
       end.to_s
+    end
+
+    def ==(right : Roll)
+      @dice.size == right.dice.size && @dice.map_with_index{|e, i| right.dice[i] == e }.all?{|e| e == true }
+    end
+
+    {% for op in [">", "<", ">=", "<="] %}
+    def {{ op.id }}(right : Roll)
+      average {{ op.id }} right.average
+    end
+    {% end %}
+
+    def <=>(right : Roll)
+      average != right.average
     end
   end
 end
