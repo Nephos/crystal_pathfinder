@@ -146,7 +146,11 @@ module Rollable
 
     {% for op in [">", "<", ">=", "<="] %}
     def {{ op.id }}(right : Dice)
-      average {{ op.id }} right.average
+      average != right.average ?
+      average {{ op.id }} right.average :
+      max != right.max ?
+      max {{ op.id }} right.max :
+      min {{ op.id }} right.min
     end
     {% end %}
 

@@ -67,7 +67,7 @@ describe Rollable::Roll do
     (r1 == r3).should eq false
 
     (r2 == r3).should eq false
-    (r2 >= r3).should eq true
+    (r2 >= r3).should eq false
     (r2 <= r3).should eq true
     (r2 <=> r3).should eq false
   end
