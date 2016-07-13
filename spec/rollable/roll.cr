@@ -56,6 +56,9 @@ describe Rollable::Roll do
   it "to_s" do
     Rollable::Roll.parse("1d6").to_s.should eq("1D6")
     Rollable::Roll.parse("-1d6").to_s.should eq("-1D6")
+    Rollable::Roll.parse("4").to_s.should eq("4")
+    Rollable::Roll.parse("-4").to_s.should eq("-4")
+    Rollable::Roll.parse("-4 + 2D6").to_s.should eq("-4 + 2D6")
     Rollable::Roll.parse(" 1d6 - 1 + 2 - 1d6 ").to_s.should eq("1D6 - 1 + 2 - 1D6")
   end
 
