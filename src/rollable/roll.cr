@@ -133,5 +133,9 @@ module Rollable
       @dice.sort!{|a, b| b <=> a }
       self
     end
+
+    def order
+      Roll.new(@dice.clone).order!
+    end
   end
 end

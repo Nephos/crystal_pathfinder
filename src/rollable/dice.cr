@@ -28,6 +28,10 @@ module Rollable
     def initialize(@count, @die)
     end
 
+    def clone
+      Dice.new(@count, @die.clone)
+    end
+
     # Create a `Dice` with "die_type" faces.
     def initialize(@count, die_type : Int32)
       @die = Rollable::Die.new(1..die_type)

@@ -12,12 +12,17 @@ module Rollable
   # d.average # => 3.5
   # d.test    # => a random value included in 1..6
   # ```
+  # TODO: make it a Struct ?
   class Die < IsRollable
     @faces : Range(Int32, Int32)
 
     getter faces
 
     def initialize(@faces)
+    end
+
+    def clone
+      Die.new(@faces)
     end
 
     def initialize(nb_faces : Int32)

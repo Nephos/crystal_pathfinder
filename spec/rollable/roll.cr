@@ -82,6 +82,8 @@ describe Rollable::Roll do
   it "order" do
     r = Rollable::Roll.parse("1d4+1d6")
     r.to_s.should eq("1D4 + 1D6")
+    r.order.to_s.should eq("1D6 + 1D4")
+    r.to_s.should eq("1D4 + 1D6")
     r.order!
     r.to_s.should eq("1D6 + 1D4")
   end
