@@ -77,25 +77,11 @@ module Rollable
       @faces == right.faces
     end
 
-    # TODO: discuss
-    def >(right : Die)
-      average > right.average
+    {% for op in [">", "<", ">=", "<="] %}
+    def {{ op.id }}(right : Die)
+      average {{ op.id }} right.average
     end
-
-    # TODO: discuss
-    def <(right : Die)
-      average < right.average
-    end
-
-    # TODO: discuss
-    def >=(right : Die)
-      average >= right.average
-    end
-
-    # TODO: discuss
-    def <=(right : Die)
-      average <= right.average
-    end
+    {% end %}
 
     def <=>(right : Die)
       average != right.average

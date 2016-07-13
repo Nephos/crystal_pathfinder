@@ -53,4 +53,15 @@ describe Rollable::Dice do
     Rollable::Dice.parse("2d6").to_s.should eq("2D6")
     Rollable::Dice.parse("2").to_s.should eq("2")
   end
+
+  it "cmp" do
+    # same test in Die
+    (Rollable::Dice.parse("2d6") == Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d6") != Rollable::Dice.parse("2d8")).should eq true
+    (Rollable::Dice.parse("2d8") > Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d8") >= Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d4") < Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d4") <= Rollable::Dice.parse("2d6")).should eq true
+    (Rollable::Dice.parse("2d4") <=> Rollable::Dice.parse("2d6")).should eq true
+  end
 end

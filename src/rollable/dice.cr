@@ -23,6 +23,8 @@ module Rollable
     @count : Int32
     @die : Rollable::Die
 
+    getter count, die
+
     def initialize(@count, @die)
     end
 
@@ -136,6 +138,20 @@ module Rollable
       else
         "#{@count}#{@die.to_s}"
       end
+    end
+
+    def ==(right : Dice)
+      @count == right.count && @die == right.die
+    end
+
+    {% for op in [">", "<", ">=", "<="] %}
+    def {{ op.id }}(right : Dice)
+      average {{ op.id }} right.average
+    end
+    {% end %}
+
+    def <=>(right : Dice)
+      average > right.average || average < right.average
     end
   end
 end
