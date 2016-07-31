@@ -14,11 +14,13 @@ module Rollable
   # ```
   # TODO: make it a Struct ?
   class Die < IsRollable
+    MAX = 1000
     @faces : Range(Int32, Int32)
 
     getter faces
 
     def initialize(@faces)
+      raise ParsingError.new "Cannot die with more than #{MAX} faces (#{@faces})" if @faces.size > MAX
     end
 
     def clone
@@ -26,6 +28,7 @@ module Rollable
     end
 
     def initialize(nb_faces : Int32)
+      raise ParsingError.new "Cannot die with more than #{MAX} faces (#{nb_faces})" if nb_faces > MAX
       @faces = 1..nb_faces
     end
 

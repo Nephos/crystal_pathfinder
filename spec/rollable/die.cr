@@ -3,6 +3,7 @@ describe Rollable::Die do
     Rollable::Die.new(1..20).should be_a(Rollable::Die)
     Rollable::Die.new(10..20).should be_a(Rollable::Die)
     Rollable::Die.new(20).should be_a(Rollable::Die)
+    expect_raises { Rollable::Die.new(1001) }
   end
 
   it "min, max, average" do

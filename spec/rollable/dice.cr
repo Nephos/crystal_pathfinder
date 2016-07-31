@@ -5,6 +5,7 @@ describe Rollable::Dice do
     d.min.should eq 2
     d.max.should eq 40
     d.average.should eq 21
+    expect_raises { Rollable::Dice.new 1001, 20 }
   end
 
   it "details" do

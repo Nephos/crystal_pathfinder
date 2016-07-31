@@ -20,6 +20,7 @@ module Rollable
   # d.test        # => the sum of 2 random values between 1..6
   # ```
   class Dice < IsRollable
+    MAX = 1000
     @count : Int32
     @die : Die
 
@@ -36,6 +37,7 @@ module Rollable
     end
 
     private def check_count!
+      raise ParsingError.new "Cannot more than #{MAX} dice (#{@count})" if @count > MAX
       if @count < 0
         @count = -@count
         @die.reverse!
