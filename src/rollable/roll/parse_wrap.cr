@@ -12,7 +12,7 @@ module Rollable
     # - sdice = [sign]?[dice]
     # - roll = [sign][dice][sdice]*
     # ```
-    def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
+    private def self.parse_str(str : String?, list : Array(Dice) = Array(Dice).new) : Array(Dice)
       return list if str.nil?
       str = str.strip
       sign = str[0]
@@ -28,9 +28,21 @@ module Rollable
     end
 
     # Parse the string "str" and returns a new `Roll` object
+    #
     # see `#parse_str`
     def self.parse(str : String) : Roll
       return Roll.new(parse_str(str))
+    end
+
+    # Parse the string "str" and returns a new `Roll` object,
+    # and execute the "block" if an error occured
+    def self.parse(str : String) : Roll?
+      begin
+        return self.parse(str)
+      rescue err
+        yield err
+        return nil
+      end
     end
 
     def to_s : String
