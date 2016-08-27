@@ -1,5 +1,7 @@
 require "./is_rollable"
 
+# Not a front class. It is used to represent a type of dice with faces
+#
 # A `Die` is a range of Integer values.
 # It is rollable.
 #

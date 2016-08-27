@@ -1,6 +1,6 @@
 require "./die"
 
-# Allow to create a die with a fixed value.
+# Allows to create a die with a fixed value.
 # The die will only gives this value everytime.
 # (`.min`, `.max`, `.test`, `.average`)
 #

@@ -1,4 +1,5 @@
 # coding: utf-8
+
 class Rollable::Dice
   # Returns the `Dice` and the string parsed from `str`, in a `NamedTuple`
   # with "str" and "dice" keys.
@@ -24,9 +25,11 @@ class Rollable::Dice
   # Return a valid string parsed from `str`. (see `#parse_string`)
   #
   # Yields the `Dice` parsed from `str`.
-  #
   # Then, it returns the string read.
   # If strict is false, only the valid string is returned.
+  # ```
+  # Dice.parse("1d6") {|dice| dice.roll } => "1d6"
+  # ```
   def self.parse(str : String, strict = true) : String
     data = parse_string(str, strict)
     yield data[:dice]

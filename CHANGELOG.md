@@ -1,5 +1,8 @@
 # v0.1
 
+## v0.1.3
+- Minor improvements
+
 ## v0.1.2
 - Block DOS attack in the parser
 

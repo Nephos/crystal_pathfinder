@@ -3,6 +3,8 @@ require "./is_rollable"
 require "./die"
 require "./fixed_value"
 
+# Not a front class. It is used to represent a tuple of die type and die amount
+#
 # A `Dice` is a amount of `Die`.
 # It is rollable exactly like a classic `Die`
 #
