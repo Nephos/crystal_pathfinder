@@ -1,9 +1,10 @@
 # rollable
 
-TODO: Write a description here
+Roll and parse dices
+
+Works with crystal v0.23.0
 
 ## Installation [![travis](https://travis-ci.org/Nephos/crystal_rollable.svg)](https://travis-ci.org/Nephos/crystal_rollable)
-
 
 Add this to your application's `shard.yml`:
 
