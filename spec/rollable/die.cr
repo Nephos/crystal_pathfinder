@@ -14,6 +14,9 @@ describe Rollable::Die do
     Rollable::Die.new(1..20).min.should eq 1
     Rollable::Die.new(1..20).max.should eq 20
     Rollable::Die.new(1..20).average.should eq 10.5
+    Rollable::Die.new(1..20, true).min.should eq 1
+    Rollable::Die.new(1..20, true).max.should eq 80
+    Rollable::Die.new(1..20, true).average.should eq (10.5*0.05**0 + 10.5*0.05**1 + 10.5*0.05**2 + 10.5*0.05**3).round(3)
   end
 
   it "test" do
@@ -54,8 +57,8 @@ describe Rollable::Die do
     Rollable::Die.new(1..20).reverse.max.should eq -1
     Rollable::Die.new(1..1).reverse.min.should eq -1
     Rollable::Die.new(1..1).reverse.max.should eq -1
-    # TODO: Rollable::Die.new(1..20, true).reverse.min.should eq -20
-    # TODO: Rollable::Die.new(1..20, true).reverse.max.should eq -1
+    Rollable::Die.new(1..20, true).reverse.min.should eq -20
+    Rollable::Die.new(1..20, true).reverse.max.should eq -4
   end
 
   it "to_s" do
@@ -63,6 +66,7 @@ describe Rollable::Die do
     Rollable::Die.new(2..2).to_s.should eq "2"
     Rollable::Die.new(2..4).to_s.should eq "D(2,4)"
     Rollable::Die.new(1..20, true).to_s.should eq "!D20"
+    Rollable::Die.new(2..4, true).to_s.should eq "!D(2,4)"
   end
 
   it "cmp" do

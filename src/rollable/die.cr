@@ -16,7 +16,7 @@ require "./is_rollable"
 # TODO: make it a Struct ?
 class Rollable::Die < Rollable::IsRollable
   MAX = 1000
-  EXPLODING_ITERATIONS = 3
+  EXPLODING_ITERATIONS = 4
 
   @faces : Range(Int32, Int32)
   getter exploding : Bool
@@ -25,6 +25,9 @@ class Rollable::Die < Rollable::IsRollable
 
   def initialize(@faces, @exploding = false)
     raise ParsingError.new "Cannot die with more than #{MAX} faces (#{@faces})" if @faces.size > MAX
+    if @faces.end < @faces.begin
+      @faces = @faces.end..@faces.begin
+    end
   end
 
   def clone
@@ -34,6 +37,9 @@ class Rollable::Die < Rollable::IsRollable
   def initialize(nb_faces : Int32, @exploding = false)
     raise ParsingError.new "Cannot die with more than #{MAX} faces (#{nb_faces})" if nb_faces > MAX
     @faces = 1..nb_faces
+    if @faces.end < @faces.begin
+      @faces = @faces.end..@faces.begin
+    end
   end
 
   # Number of faces of the `Die`
@@ -60,32 +66,60 @@ class Rollable::Die < Rollable::IsRollable
   # Die.new(1..6).reverse # => Die.new -6..-1
   # ```
   def reverse : Die
-    Die.new -max..-min, @exploding
+    Die.new -@faces.end..-@faces.begin, @exploding
   end
 
   def reverse!
-    @faces = -max..-min
+    @faces = -@faces.end..-@faces.begin
     self
   end
 
   def max : Int32
-    @faces.end
+    if @exploding
+      @faces.end * EXPLODING_ITERATIONS
+    else
+      @faces.end
+    end
   end
 
   def min : Int32
     @faces.begin
   end
 
+  private def explode(&block)
+    i = EXPLODING_ITERATIONS
+    value = 0
+    previous = [] of Int32
+    while i > 0 && value != @faces.end
+      value = @faces.to_a.sample
+      previous << value
+      i -= 1
+      yield value, previous
+    end
+  end
+
   # Return a random value in the range of the dice
   def test : Int32
-    @faces.to_a.sample
+    if @exploding
+      sum = 0
+      explode { |value, _| sum += value }
+      sum
+    else
+      @faces.to_a.sample
+    end
   end
 
   # Mathematical expectation.
   #
   # A d6 will have a expected value of 3.5
   def average : Float64
-    @faces.reduce { |r, l| r + l }.to_f64 / @faces.size
+    proba = @faces.size.to_f64
+    non_exploding_average = @faces.reduce { |r, l| r + l }.to_f64 / proba
+    if @exploding
+      EXPLODING_ITERATIONS.times.reduce(0.0) {|base, i| base + non_exploding_average / proba ** i }.round(3)
+    else
+      non_exploding_average
+    end
   end
 
   # Return a string.
@@ -96,9 +130,9 @@ class Rollable::Die < Rollable::IsRollable
     string = if self.size == 1
                min.to_s
              elsif self.min == 1
-               "D#{self.max}"
+               "D#{@faces.end}"
              else
-               "D(#{self.min},#{self.max})"
+               "D(#{@faces.begin},#{@faces.end})"
              end
     string = "!#{string}" if @exploding
     return string
@@ -123,3 +157,4 @@ class Rollable::Die < Rollable::IsRollable
     average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
   end
 end
+#
