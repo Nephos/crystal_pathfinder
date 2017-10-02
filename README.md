@@ -20,7 +20,8 @@ dependencies:
 
 ```crystal
 require "rollable"
-Rollable::Roll.parse("2d6+4").test # => roll 2 dices and add 4 to the sum
+Rollable::Roll.parse("2d6+4").test # => Roll 2 dices and add 4 to the sum
+Rollable::Roll.parse("!1d20 + !1d8").test # => Exploding dices
 ```
 
 
