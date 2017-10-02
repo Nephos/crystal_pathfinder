@@ -16,19 +16,22 @@ require "./is_rollable"
 # TODO: make it a Struct ?
 class Rollable::Die < Rollable::IsRollable
   MAX = 1000
+  EXPLODING_ITERATIONS = 3
+
   @faces : Range(Int32, Int32)
+  getter exploding : Bool
 
   getter faces
 
-  def initialize(@faces)
+  def initialize(@faces, @exploding = false)
     raise ParsingError.new "Cannot die with more than #{MAX} faces (#{@faces})" if @faces.size > MAX
   end
 
   def clone
-    Die.new(@faces)
+    Die.new(@faces, @exploding)
   end
 
-  def initialize(nb_faces : Int32)
+  def initialize(nb_faces : Int32, @exploding = false)
     raise ParsingError.new "Cannot die with more than #{MAX} faces (#{nb_faces})" if nb_faces > MAX
     @faces = 1..nb_faces
   end
@@ -57,7 +60,7 @@ class Rollable::Die < Rollable::IsRollable
   # Die.new(1..6).reverse # => Die.new -6..-1
   # ```
   def reverse : Die
-    Die.new -max..-min
+    Die.new -max..-min, @exploding
   end
 
   def reverse!
@@ -90,21 +93,24 @@ class Rollable::Die < Rollable::IsRollable
   # - It may be a dice ```(1..n) => "D#{n}"```
   # - Else, ```(a..b) => "D(#{a},#{b})"```
   def to_s : String
-    if self.size == 1
-      min.to_s
-    elsif self.min == 1
-      "D#{self.max}"
-    else
-      "D(#{self.min},#{self.max})"
-    end
+    string = if self.size == 1
+               min.to_s
+             elsif self.min == 1
+               "D#{self.max}"
+             else
+               "D(#{self.min},#{self.max})"
+             end
+    string = "!#{string}" if @exploding
+    return string
   end
 
   def ==(right : Die)
-    @faces == right.faces
+    @faces == right.faces && @exploding == right.exploding
   end
 
   {% for op in [">", "<", ">=", "<="] %}
   def {{ op.id }}(right : Die)
+    return false if @exploding != right.exploding
     average != right.average ?
     average {{ op.id }} right.average :
     max != right.max ?
