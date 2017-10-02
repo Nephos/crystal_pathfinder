@@ -15,7 +15,7 @@ class Rollable::Roll
     return list if str.nil?
     str = str.strip
     sign = str[0]
-    if sign != '+' && sign != '-' && !list.empty?
+    if sign != '+' && sign != '-' && sign != '!' && !list.empty?
       raise ParsingError.new("Parsing Error: roll, near to '#{str}'")
     end
     str = str[1..-1] if sign == '-' || sign == '+'
