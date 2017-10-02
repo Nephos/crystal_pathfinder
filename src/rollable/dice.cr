@@ -32,8 +32,8 @@ class Rollable::Dice < Rollable::IsRollable
   end
 
   # Create a `Dice` with "die_type" faces.
-  def initialize(@count, die_type : Int32)
-    @die = Die.new(1..die_type)
+  def initialize(@count, die_type : Int32, exploding : Bool = false)
+    @die = Die.new(1..die_type, exploding)
     check_count!
   end
 

@@ -5,20 +5,21 @@ class Rollable::Dice
   # with "str" and "dice" keys.
   #
   # - If "strict" is true, then the string must end following the regex
-  #   `\A\d+(d\d+)?\Z/i`
+  #   `\A(!)?\d+(d\d+)?\Z/i`
   #
   # - If "strict" is false, then the string doesn't have to finish following
   #   the regexp.
   private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Dice)
-    match = str.match(/\A(?<sign>-|\+)? *(?<count>\d+)(?:(?:d)(?<die>\d+))?#{strict ? "\\Z" : ""}/i)
+    match = str.match(/\A(?<sign>-|\+)? *(?<exploding>!)?(?<count>\d+)(?:(?:d)(?<die>\d+))?#{strict ? "\\Z" : ""}/i)
     raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
     sign = (match["sign"]? || "+") == "+" ? 1 : -1
     count = match["count"]
     die = match["die"]?
+    exploding = match["exploding"]? ? true : false
     if die.nil?
-      return {str: match[0], dice: FixedValue.new_dice(sign * count.to_i)}
+      {str: match[0], dice: FixedValue.new_dice(sign * count.to_i)}
     else
-      return {str: match[0], dice: Dice.new(sign * count.to_i, die.to_i)}
+      {str: match[0], dice: Dice.new(sign * count.to_i, die.to_i, exploding)}
     end
   end
 

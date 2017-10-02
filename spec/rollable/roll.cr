@@ -40,6 +40,7 @@ describe Rollable::Roll do
     r1.should be_a(Rollable::Roll)
     r1.min.should eq 6
     r1.max.should eq 16
+    (Rollable::Roll.parse("!2d6+4").average > Rollable::Roll.parse("2d6+4").average).should be_true
   end
 
   it "parse (error)" do
