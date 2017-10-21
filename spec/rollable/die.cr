@@ -24,6 +24,7 @@ describe Rollable::Die do
       min = rand 1..10
       max = rand min..20
       ((min..max).includes? Rollable::Die.new(min..max).test).should eq(true)
+      ((min..max*Rollable::Die::EXPLODING_ITERATIONS).includes? Rollable::Die.new(min..max, true).test).should eq(true)
     end
   end
 

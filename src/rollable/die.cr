@@ -87,14 +87,10 @@ class Rollable::Die < Rollable::IsRollable
   end
 
   private def explode(&block)
-    i = EXPLODING_ITERATIONS
-    value = 0
-    previous = [] of Int32
-    while i > 0 && value != @faces.end
+    EXPLODING_ITERATIONS.times do |_|
       value = @faces.to_a.sample
-      previous << value
-      i -= 1
-      yield value, previous
+      yield value
+      break if value != @faces.end
     end
   end
 
@@ -102,7 +98,7 @@ class Rollable::Die < Rollable::IsRollable
   def test : Int32
     if @exploding
       sum = 0
-      explode { |value, _| sum += value }
+      explode { |value| sum += value }
       sum
     else
       @faces.to_a.sample

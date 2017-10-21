@@ -8,8 +8,22 @@ describe Rollable::Roll do
     r.min.should eq 5
     r.max.should eq 24
     r.average.should eq 14.5
-    10.times do
+    100.times do
       (5..24).includes?(r.test).should eq true
+    end
+  end
+
+  it "initialize exploding" do
+    r = Rollable::Roll.new [
+      Rollable::Dice.new(1, 6, true),
+    ]
+    r.should be_a Rollable::Roll
+    min = 1
+    max = 6*Rollable::Die::EXPLODING_ITERATIONS
+    r.min.should eq min
+    r.max.should eq max
+    100.times do
+      (min..max).includes?(r.test).should eq true
     end
   end
 
@@ -18,7 +32,7 @@ describe Rollable::Roll do
     r.min_details.should eq([1, 1, 1])
     r.max_details.should eq([6, 6, 4])
     r.average_details.should eq([3.5, 3.5, 2.5])
-    10.times do
+    100.times do
       t = r.test_details
       (1..6).includes?(t[0]).should eq true
       (1..6).includes?(t[1]).should eq true
