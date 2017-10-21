@@ -90,11 +90,11 @@ class Rollable::Die < Rollable::IsRollable
     i = EXPLODING_ITERATIONS
     value = 0
     previous = [] of Int32
-    while i > 0 && value != @faces.end
+    i.times do
       value = @faces.to_a.sample
       previous << value
-      i -= 1
       yield value, previous
+      break if value != @faces.end
     end
   end
 
