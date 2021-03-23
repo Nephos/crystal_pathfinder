@@ -149,8 +149,14 @@ class Rollable::Die < Rollable::IsRollable
   end
   {% end %}
 
-  def <=>(right : Die)
-    average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
+  def <=>(right : Die) : Int32
+    if average != right.average
+      average - right.average > 0 ? 1 : -1
+    elsif max != right.max
+      max - right.max <=> 0
+    else
+      min - right.min <=> 0
+    end
   end
 end
 #

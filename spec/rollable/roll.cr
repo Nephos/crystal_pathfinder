@@ -58,7 +58,7 @@ describe Rollable::Roll do
   end
 
   it "parse (error)" do
-    expect_raises { Rollable::Roll.parse("yolo") }
+    expect_raises(Exception) { Rollable::Roll.parse("yolo") }
     Rollable::Roll.parse("yolo") { |_| true } rescue fail("must be catch in block")
   end
 

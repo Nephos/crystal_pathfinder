@@ -80,7 +80,13 @@ class Rollable::Roll < Rollable::IsRollable
   {% end %}
 
   def <=>(right : Roll) : Int32
-    average != right.average ? average - right.average <=> 0 : max != right.max ? max - right.max <=> 0 : min - right.min <=> 0
+    if average != right.average
+      average - right.average > 0 ? 1 : -1
+    elsif max != right.max
+      max - right.max <=> 0
+    else
+      min - right.min <=> 0
+    end
   end
 
   def order!

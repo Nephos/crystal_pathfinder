@@ -1,24 +1,16 @@
 NAME=`ls -d src/*/ | cut -f2 -d'/'`
 
-all: deps_opt build
+all: deps_opt test
 
-run:
-	crystal run src/$(NAME).cr
-build:
-	crystal build src/$(NAME).cr --stats
-release:
-	crystal build src/$(NAME).cr --stats --release
 test:
 	crystal spec
 deps:
-	crystal deps install
+	shards install
 deps_update:
-	crystal deps update
+	shards update
 deps_opt:
 	@[ -d lib/ ] || make deps
 doc:
 	crystal docs
-clean:
-	rm $(NAME)
 
-.PHONY: all run build release test deps deps_update clean doc
+.PHONY: all run build release test deps deps_update doc

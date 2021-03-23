@@ -5,7 +5,7 @@ describe Rollable::Dice do
     d.min.should eq 2
     d.max.should eq 40
     d.average.should eq 21
-    expect_raises { Rollable::Dice.new 1001, 20 }
+    expect_raises(Exception) { Rollable::Dice.new 1001, 20 }
   end
 
   it "details" do
@@ -47,9 +47,9 @@ describe Rollable::Dice do
   end
 
   it "parse (error)" do
-    expect_raises { Rollable::Dice.parse("yolo") }
-    expect_raises { Rollable::Dice.parse("1d6+1", true) }
-    expect_raises { Rollable::Dice.parse("--1d4") }
+    expect_raises(Exception) { Rollable::Dice.parse("yolo") }
+    expect_raises(Exception) { Rollable::Dice.parse("1d6+1", true) }
+    expect_raises(Exception) { Rollable::Dice.parse("--1d4") }
   end
 
   it "consume" do
