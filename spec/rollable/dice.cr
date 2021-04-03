@@ -47,6 +47,17 @@ describe Rollable::Dice do
   end
 
   describe "adjustements" do
+    it "initialize" do 
+      d = Rollable::Dice.new 2, 20, false, 1
+      d.should be_a Rollable::Dice
+      d.min.should eq 1
+      d.max.should eq 20
+      d = Rollable::Dice.new 2, 20, false, -1
+      d.should be_a Rollable::Dice
+      d.min.should eq 1
+      d.max.should eq 20
+    end
+
     it "parses keep" do
       Rollable::Dice.parse("2d6k1").should be_a(Rollable::Dice)
       Rollable::Dice.parse("2d6k1").min.should eq 1

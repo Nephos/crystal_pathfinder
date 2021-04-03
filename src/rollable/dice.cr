@@ -101,6 +101,15 @@ class Rollable::Dice < Rollable::IsRollable
     @count.times.to_a.map { @die.test }
   end
 
+  # Roll an amount of `Dice` as specified, and return the values along with the
+  # values that would be dropped
+  def test_details_with_drop : {Array(Int32), Array(Int32)}
+    rolls = @count.times.to_a.map { @die.test }.sort
+    rolls_to_drop = @drop < 0 ? rolls.reverse : rolls.clone
+    rolls_to_drop.shift(@count - @drop.abs)
+    {rolls, rolls_to_drop}
+  end
+
   def average : Float64
     @die.average * @count
   end
