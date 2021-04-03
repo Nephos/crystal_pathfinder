@@ -24,15 +24,16 @@ class Rollable::Dice < Rollable::IsRollable
   MAX = 1000
   @count : Int32
   @die : Die
+  @drop: Int32
 
-  getter count, die
+  getter count, die, drop
 
-  def initialize(@count, @die)
+  def initialize(@count, @die, @drop = 0)
     check_count!
   end
 
   # Create a `Dice` with "die_type" faces.
-  def initialize(@count, die_type : Int32, exploding : Bool = false)
+  def initialize(@count, die_type : Int32, exploding : Bool = false, @drop = 0)
     @die = Die.new(1..die_type, exploding)
     check_count!
   end
@@ -46,13 +47,17 @@ class Rollable::Dice < Rollable::IsRollable
     self
   end
 
+  private def count_after_drop
+    @count - @drop.abs
+  end
+
   def count=(count : Int32)
     @count = count
     check_count!
   end
 
   def clone
-    Dice.new(@count, @die.clone)
+    Dice.new(@count, @die.clone, @drop)
   end
 
   delegate "fixed?", to: die
@@ -65,7 +70,7 @@ class Rollable::Dice < Rollable::IsRollable
   # Dice.parse("1d6").reverse # => -1d6
   # ```
   def reverse : Dice
-    Dice.new -@count, @die
+    Dice.new -@count, @die, @drop
   end
 
   def reverse!
@@ -75,11 +80,11 @@ class Rollable::Dice < Rollable::IsRollable
 
   {% for ft in ["min", "max"] %}
   def {{ ft.id }} : Int32
-    @die.{{ ft.id }} * @count
+    @die.{{ ft.id }} * count_after_drop
   end
 
   def {{ (ft + "_details").id }} : Array(Int32)
-    @count.times.to_a.map{ @die.{{ ft.id }} }
+    count_after_drop.times.to_a.map{ @die.{{ ft.id }} }
   end
   {% end %}
 
@@ -102,7 +107,7 @@ class Rollable::Dice < Rollable::IsRollable
   end
 
   def ==(right : Dice)
-    @count == right.count && @die == right.die
+    @count == right.count && @die == right.die && @drop === right.drop
   end
 
   {% for op in [">", "<", ">=", "<="] %}

@@ -46,6 +46,52 @@ describe Rollable::Dice do
     Rollable::Dice.parse("!1d6").max.should eq Rollable::Die.new(1..6, true).max
   end
 
+  describe "adjustements" do
+    it "parses keep" do
+      Rollable::Dice.parse("2d6k1").should be_a(Rollable::Dice)
+      Rollable::Dice.parse("2d6k1").min.should eq 1
+      Rollable::Dice.parse("2d6k1").max.should eq 6
+      Rollable::Dice.parse("3d6k1").min.should eq 1
+      Rollable::Dice.parse("3d6k1").max.should eq 6
+
+      Rollable::Dice.parse("3d6k2").min.should eq 2
+      Rollable::Dice.parse("3d6k2").max.should eq 12
+      Rollable::Dice.parse("3d6k0").min.should eq 0
+      Rollable::Dice.parse("3d6k0").max.should eq 0 
+
+      Rollable::Dice.parse("4d6kh1").min.should eq 1
+      Rollable::Dice.parse("4d6kh1").max.should eq 6
+
+      Rollable::Dice.parse("4d6kl1").min.should eq 1
+      Rollable::Dice.parse("4d6kl1").max.should eq 6
+
+      # What are thoughts on this value? Maybe expose count_after_drop?
+      # Rollable::Dice.parse("4d6kl1").count.should eq 1
+    end
+
+    it "parses drop" do
+      Rollable::Dice.parse("2d6d1").should be_a(Rollable::Dice)
+      Rollable::Dice.parse("2d6d1").min.should eq 1
+      Rollable::Dice.parse("2d6d1").max.should eq 6
+      Rollable::Dice.parse("3d6d1").min.should eq 2
+      Rollable::Dice.parse("3d6d1").max.should eq 12
+
+      Rollable::Dice.parse("3d6d2").min.should eq 1
+      Rollable::Dice.parse("3d6d2").max.should eq 6
+      Rollable::Dice.parse("3d6d3").min.should eq 0
+      Rollable::Dice.parse("3d6d3").max.should eq 0 
+
+      Rollable::Dice.parse("4d6dh1").min.should eq 3
+      Rollable::Dice.parse("4d6dh1").max.should eq 18
+
+      Rollable::Dice.parse("4d6dl1").min.should eq 3
+      Rollable::Dice.parse("4d6dl1").max.should eq 18
+
+      # What are thoughts on this value? Maybe expose count_after_drop?
+      # Rollable::Dice.parse("4d6dl1").count.should eq 3
+    end
+  end
+
   it "parse (error)" do
     expect_raises(Exception) { Rollable::Dice.parse("yolo") }
     expect_raises(Exception) { Rollable::Dice.parse("1d6+1", true) }
