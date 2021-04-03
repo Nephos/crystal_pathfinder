@@ -65,8 +65,17 @@ describe Rollable::Dice do
       Rollable::Dice.parse("4d6kl1").min.should eq 1
       Rollable::Dice.parse("4d6kl1").max.should eq 6
 
-      # What are thoughts on this value? Maybe expose count_after_drop?
-      # Rollable::Dice.parse("4d6kl1").count.should eq 1
+      Rollable::Dice.parse("4d6kl1").count_after_drop.should eq 1
+    end
+
+    it "rolls keep dice within bounds" do
+      d6kl1 = Rollable::Dice.parse("4d6kl1")
+      d6kl1.test.should be <= d6kl1.max
+      d6kl1.test.should be >= d6kl1.min
+
+      d6kh2 = Rollable::Dice.parse("4d6kh2")
+      d6kh2.test.should be <= d6kh2.max
+      d6kh2.test.should be >= d6kh2.min
     end
 
     it "parses drop" do
@@ -87,8 +96,17 @@ describe Rollable::Dice do
       Rollable::Dice.parse("4d6dl1").min.should eq 3
       Rollable::Dice.parse("4d6dl1").max.should eq 18
 
-      # What are thoughts on this value? Maybe expose count_after_drop?
-      # Rollable::Dice.parse("4d6dl1").count.should eq 3
+      Rollable::Dice.parse("4d6dl1").count_after_drop.should eq 3
+    end
+
+    it "rolls drop dice within bounds" do
+      d6dl1 = Rollable::Dice.parse("4d6dl1")
+      d6dl1.test.should be <= d6dl1.max
+      d6dl1.test.should be >= d6dl1.min
+
+      d6dh2 = Rollable::Dice.parse("4d6dh2")
+      d6dh2.test.should be <= d6dh2.max
+      d6dh2.test.should be >= d6dh2.min
     end
   end
 

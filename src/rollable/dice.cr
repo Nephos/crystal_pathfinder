@@ -47,7 +47,7 @@ class Rollable::Dice < Rollable::IsRollable
     self
   end
 
-  private def count_after_drop
+  def count_after_drop
     @count - @drop.abs
   end
 
@@ -90,7 +90,10 @@ class Rollable::Dice < Rollable::IsRollable
 
   # Roll an amount of `Dice` as specified, and return the sum
   def test : Int32
-    @count.times.reduce(0) { |r, l| r + @die.test }
+    rolls = test_details
+    rolls.reverse! if @drop > 0
+    rolls.shift(@drop.abs)
+    rolls.reduce(0) { |r, l| r + l }
   end
 
   # Roll an amount of `Dice` as specified, and return the values
