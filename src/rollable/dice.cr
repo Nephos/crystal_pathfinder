@@ -90,7 +90,7 @@ class Rollable::Dice < Rollable::IsRollable
 
   # Roll an amount of `Dice` as specified, and return the sum
   def test : Int32
-    rolls = test_details
+    rolls = test_details.sort
     rolls.reverse! if @drop > 0
     rolls.shift(@drop.abs)
     rolls.reduce(0) { |r, l| r + l }
