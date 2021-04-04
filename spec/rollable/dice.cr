@@ -119,6 +119,14 @@ describe Rollable::Dice do
       d6dh2.test.should be <= d6dh2.max
       d6dh2.test.should be >= d6dh2.min
     end
+
+    it "correctly calculated the average" do
+      # source: https://math.stackexchange.com/a/223248
+      Rollable::Dice.parse("2d6kh1").average.round(3).should eq 4.472
+      # source: http://onlinedungeonmaster.com/2012/05/24/advantage-and-disadvantage-in-dd-next-the-math/
+      Rollable::Dice.parse("2d20d1").average.round(3).should eq 13.825
+      Rollable::Dice.parse("2d20dh1").average.round(3).should eq 7.175
+    end
   end
 
   it "parse (error)" do

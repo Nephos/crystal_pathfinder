@@ -111,7 +111,21 @@ class Rollable::Dice < Rollable::IsRollable
   end
 
   def average : Float64
-    @die.average * @count
+    if drop == 0
+      @die.average * @count
+    else
+      # simulate all of the possible rolls
+      rolls = (1..@count).reduce([] of Int32) { |rolls, x| rolls.concat(1..@die.size).to_a }
+      # grab unique combinations
+      uniq_rolls = rolls.combinations(count).uniq
+      # sum all combinations(following drop logic) then divide to get average
+      uniq_rolls.reduce(0){ |sum, roll| 
+        roll.sort!
+        roll.reverse! if drop > 0
+        roll.shift(drop.abs)
+        sum + roll.sum
+      } / uniq_rolls.size
+    end
   end
 
   def average_details : Array(Float64)
