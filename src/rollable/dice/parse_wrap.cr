@@ -29,7 +29,7 @@ class Rollable::Dice
   # Normalized to be "drop" so:
   # keep lowest X becomes drop highest Y
   # keep highest X becomes drop lowest Y
-  private def self.parse_adjustment(str : String, count : Int32) :  Int32
+  private def self.parse_adjustment(str : String, count : Int32) : Int32
     match = str.match(/(?<kind>[k|d])(?<type>[l|h])?(?<quantity>\d+)/i)
     return 0 if match.nil?
     quantity = match["kind"] === "k" ? count - match["quantity"].to_i : match["quantity"].to_i

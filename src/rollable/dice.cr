@@ -24,7 +24,7 @@ class Rollable::Dice < Rollable::IsRollable
   MAX = 1000
   @count : Int32
   @die : Die
-  @drop: Int32
+  @drop : Int32
 
   getter count, die, drop
 
@@ -119,7 +119,7 @@ class Rollable::Dice < Rollable::IsRollable
       # grab unique combinations
       uniq_rolls = rolls.combinations(count).uniq
       # sum all combinations(following drop logic) then divide to get average
-      uniq_rolls.reduce(0){ |sum, roll| 
+      uniq_rolls.reduce(0) { |sum, roll|
         roll.sort!
         roll.reverse! if drop > 0
         roll.shift(drop.abs)

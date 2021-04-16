@@ -15,8 +15,8 @@ require "./is_rollable"
 # ```
 # TODO: make it a Struct ?
 class Rollable::Die < Rollable::IsRollable
-  MAX = 1000
-  EXPLODING_ITERATIONS = 4
+  MAX                  = 1000
+  EXPLODING_ITERATIONS =    4
 
   @faces : Range(Int32, Int32)
   getter exploding : Bool
@@ -112,7 +112,7 @@ class Rollable::Die < Rollable::IsRollable
     proba = @faces.size.to_f64
     non_exploding_average = @faces.reduce { |r, l| r + l }.to_f64 / proba
     if @exploding
-      EXPLODING_ITERATIONS.times.reduce(0.0) {|base, i| base + non_exploding_average / proba ** i }.round(3)
+      EXPLODING_ITERATIONS.times.reduce(0.0) { |base, i| base + non_exploding_average / proba ** i }.round(3)
     else
       non_exploding_average
     end

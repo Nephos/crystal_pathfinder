@@ -47,7 +47,7 @@ describe Rollable::Dice do
   end
 
   describe "adjustements" do
-    it "initialize" do 
+    it "initialize" do
       d = Rollable::Dice.new 2, 20, false, 1
       d.should be_a Rollable::Dice
       d.min.should eq 1
@@ -68,7 +68,7 @@ describe Rollable::Dice do
       Rollable::Dice.parse("3d6k2").min.should eq 2
       Rollable::Dice.parse("3d6k2").max.should eq 12
       Rollable::Dice.parse("3d6k0").min.should eq 0
-      Rollable::Dice.parse("3d6k0").max.should eq 0 
+      Rollable::Dice.parse("3d6k0").max.should eq 0
 
       Rollable::Dice.parse("4d6kh1").min.should eq 1
       Rollable::Dice.parse("4d6kh1").max.should eq 6
@@ -99,7 +99,7 @@ describe Rollable::Dice do
       Rollable::Dice.parse("3d6d2").min.should eq 1
       Rollable::Dice.parse("3d6d2").max.should eq 6
       Rollable::Dice.parse("3d6d3").min.should eq 0
-      Rollable::Dice.parse("3d6d3").max.should eq 0 
+      Rollable::Dice.parse("3d6d3").max.should eq 0
 
       Rollable::Dice.parse("4d6dh1").min.should eq 3
       Rollable::Dice.parse("4d6dh1").max.should eq 18
