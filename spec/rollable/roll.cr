@@ -106,6 +106,7 @@ describe Rollable::Roll do
     Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 + 1d6 + 1 + 1d6").compact!.to_s.should eq "4D8 + 3D6 + 1D20 + 9"
     Rollable::Roll.parse("2d8 + 1d6 + 1d20 + 5 + 2d8 + 1 + 2 - 1d6 - 1 + 1d6").compact!.to_s.should eq "4D8 + 1D6 + 1D20 + 7"
     Rollable::Roll.parse("1D6 + 1D6 - 2D6").compact!.size.should eq 0
+    Rollable::Roll.parse("2d20dh1 + 1d6 + 1").average.round(3).should eq 11.675
   end
 
   it "order" do

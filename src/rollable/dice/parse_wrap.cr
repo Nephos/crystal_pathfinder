@@ -10,16 +10,34 @@ class Rollable::Dice
   # - If "strict" is false, then the string doesn't have to finish following
   #   the regexp.
   private def self.parse_string(str : String, strict = true) : NamedTuple(str: String, dice: Dice)
-    match = str.match(/\A(?<sign>-|\+)? *(?<exploding>!)?(?<count>\d+)(?:(?:d)(?<die>\d+))?#{strict ? "\\Z" : ""}/i)
+    match = str.match(/\A(?<sign>-|\+)? *(?<exploding>!)?(?<count>\d+)(?:(?:d)(?<die>\d+))?(?<adjustment>[k|d][l|h]?\d+)?#{strict ? "\\Z" : ""}/i)
     raise ParsingError.new("Parsing Error: dice, near to '#{str}'") if match.nil?
     sign = (match["sign"]? || "+") == "+" ? 1 : -1
     count = match["count"]
     die = match["die"]?
     exploding = match["exploding"]? ? true : false
+    drop = match["adjustment"]? ? parse_adjustment(match["adjustment"], count.to_i) : 0
     if die.nil?
       {str: match[0], dice: FixedValue.new_dice(sign * count.to_i)}
     else
-      {str: match[0], dice: Dice.new(sign * count.to_i, die.to_i, exploding)}
+      {str: match[0], dice: Dice.new(sign * count.to_i, die.to_i, exploding, drop)}
+    end
+  end
+
+  # Return the drop value of parsed string
+  # Negative means "lowest", positive means "highest"
+  # Normalized to be "drop" so:
+  # keep lowest X becomes drop highest Y
+  # keep highest X becomes drop lowest Y
+  private def self.parse_adjustment(str : String, count : Int32) : Int32
+    match = str.match(/(?<kind>[k|d])(?<type>[l|h])?(?<quantity>\d+)/i)
+    return 0 if match.nil?
+    quantity = match["kind"] === "k" ? count - match["quantity"].to_i : match["quantity"].to_i
+    case match["type"]?
+    when "h"
+      match["kind"] === "k" ? quantity * -1 : quantity
+    else
+      match["kind"] === "k" ? quantity : quantity * -1
     end
   end
 

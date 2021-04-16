@@ -24,15 +24,16 @@ class Rollable::Dice < Rollable::IsRollable
   MAX = 1000
   @count : Int32
   @die : Die
+  @drop : Int32
 
-  getter count, die
+  getter count, die, drop
 
-  def initialize(@count, @die)
+  def initialize(@count, @die, @drop = 0)
     check_count!
   end
 
   # Create a `Dice` with "die_type" faces.
-  def initialize(@count, die_type : Int32, exploding : Bool = false)
+  def initialize(@count, die_type : Int32, exploding : Bool = false, @drop = 0)
     @die = Die.new(1..die_type, exploding)
     check_count!
   end
@@ -46,13 +47,17 @@ class Rollable::Dice < Rollable::IsRollable
     self
   end
 
+  def count_after_drop
+    @count - @drop.abs
+  end
+
   def count=(count : Int32)
     @count = count
     check_count!
   end
 
   def clone
-    Dice.new(@count, @die.clone)
+    Dice.new(@count, @die.clone, @drop)
   end
 
   delegate "fixed?", to: die
@@ -65,7 +70,7 @@ class Rollable::Dice < Rollable::IsRollable
   # Dice.parse("1d6").reverse # => -1d6
   # ```
   def reverse : Dice
-    Dice.new -@count, @die
+    Dice.new -@count, @die, @drop
   end
 
   def reverse!
@@ -75,17 +80,20 @@ class Rollable::Dice < Rollable::IsRollable
 
   {% for ft in ["min", "max"] %}
   def {{ ft.id }} : Int32
-    @die.{{ ft.id }} * @count
+    @die.{{ ft.id }} * count_after_drop
   end
 
   def {{ (ft + "_details").id }} : Array(Int32)
-    @count.times.to_a.map{ @die.{{ ft.id }} }
+    count_after_drop.times.to_a.map{ @die.{{ ft.id }} }
   end
   {% end %}
 
   # Roll an amount of `Dice` as specified, and return the sum
   def test : Int32
-    @count.times.reduce(0) { |r, l| r + @die.test }
+    rolls = test_details.sort
+    rolls.reverse! if @drop > 0
+    rolls.shift(@drop.abs)
+    rolls.reduce(0) { |r, l| r + l }
   end
 
   # Roll an amount of `Dice` as specified, and return the values
@@ -93,8 +101,31 @@ class Rollable::Dice < Rollable::IsRollable
     @count.times.to_a.map { @die.test }
   end
 
+  # Roll an amount of `Dice` as specified, and return the values along with the
+  # values that would be dropped
+  def test_details_with_drop : {Array(Int32), Array(Int32)}
+    rolls = @count.times.to_a.map { @die.test }.sort
+    rolls_to_drop = @drop < 0 ? rolls.reverse : rolls.clone
+    rolls_to_drop.shift(@count - @drop.abs)
+    {rolls, rolls_to_drop}
+  end
+
   def average : Float64
-    @die.average * @count
+    if drop == 0
+      @die.average * @count
+    else
+      # simulate all of the possible rolls
+      rolls = (1..@count).reduce([] of Int32) { |rolls, x| rolls.concat(1..@die.size).to_a }
+      # grab unique combinations
+      uniq_rolls = rolls.combinations(count).uniq
+      # sum all combinations(following drop logic) then divide to get average
+      uniq_rolls.reduce(0) { |sum, roll|
+        roll.sort!
+        roll.reverse! if drop > 0
+        roll.shift(drop.abs)
+        sum + roll.sum
+      } / uniq_rolls.size
+    end
   end
 
   def average_details : Array(Float64)
@@ -102,7 +133,7 @@ class Rollable::Dice < Rollable::IsRollable
   end
 
   def ==(right : Dice)
-    @count == right.count && @die == right.die
+    @count == right.count && @die == right.die && @drop === right.drop
   end
 
   {% for op in [">", "<", ">=", "<="] %}
